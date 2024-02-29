@@ -7,6 +7,12 @@ services:
       - "80:80"
     depends_on:
       - frontend
+      - mongodb
+
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
 
   frontend:
     build:
