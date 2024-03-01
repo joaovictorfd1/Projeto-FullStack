@@ -19,4 +19,33 @@ router.get('/products', async (req, res) => {
   }
 });
 
+router.post('/products', async (req, res) => {
+  try {
+    const response = await axios.post('https://dummyjson.com/products/add', req.body)
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+})
+
+router.put('/products/:id', async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const response = await axios.put(`https://dummyjson.com/products/${productId}`, req.body)
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+})
+
+router.delete('/products/:id', async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const response = await axios.delete(`https://dummyjson.com/products/${productId}`)
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+})
+
 module.exports = router;
