@@ -42,3 +42,5 @@ app.post('/register', async (req, res) => {
 app.post('/login', authRouter)
 
 app.listen(PORT, HOST);
+
+module.exports = app
