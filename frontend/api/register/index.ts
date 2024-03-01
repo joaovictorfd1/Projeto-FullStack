@@ -1,8 +1,8 @@
 import { AxiosResponse } from "axios";
 
 import { api } from "../api";
-import { IRegister } from "../../../interfaces/IRegister";
-import { IUser } from "../../../interfaces/IUser";
+import { IRegister } from "../../interfaces/IRegister";
+import { IUser } from "../../interfaces/IUser";
 
 const path = "/users/add";
 

@@ -13,7 +13,7 @@ import { useFormik } from 'formik';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { ILogin } from '../../interfaces/ILogin';
 import { SignInSchema } from '../../utils/validators/schemas';
-import { login } from '../api/login';
+import { login } from '../../api/login';
 import { Alert } from '../../components/Alert';
 import { Copyright } from '../../components/Copyright';
 
@@ -28,10 +28,10 @@ const initialValues: ILogin = {
 export default function SignIn() {
   const onSubmit = async (body: ILogin) => {
     const user = await login(body);
-    if (user.response.status !== 400) {
-      return Alert('sucess', 'Login efetuado com sucesso')
+    if (user && !user?.response?.data) {
+      return Alert('success', 'Login efetuado com sucesso')
     }
-    return Alert('error', user.response.data.message)
+    return Alert('error', user?.response?.data.error)
   };
 
   const formik = useFormik({
@@ -62,7 +62,7 @@ export default function SignIn() {
           <Box component="form" onSubmit={formik.handleSubmit} sx={{ mt: 1 }}>
             <TextField
               id="email"
-              label="Usuário"
+              label="Email"
               name="email"
               margin="normal"
               autoFocus
