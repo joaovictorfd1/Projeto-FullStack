@@ -26,6 +26,7 @@ import { getAllProducts } from '../../api/products';
 import { IProduct } from '../../interfaces/IProduct';
 import { Button, Pagination, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, TextField } from '@mui/material';
 import { ProductImage } from '../../components/Img';
+import { useRouter } from 'next/navigation';
 
 const drawerWidth: number = 240;
 
@@ -88,6 +89,7 @@ interface IResponseProducts {
 }
 
 export default function Dashboard() {
+  const router = useRouter();
   const [open, setOpen] = React.useState(true);
   const [currentPage, setCurrentPage] = React.useState<number>(1)
   const [filter, setFilter] = React.useState<string>('')
@@ -96,10 +98,9 @@ export default function Dashboard() {
     setOpen(!open);
   };
 
-  const createHandleMenuClick = (menuItem: string) => {
-    return () => {
-      console.log(`Clicked on ${menuItem}`);
-    };
+  const createHandleMenuClick = () => {
+    localStorage.removeItem('token')
+    return router.push('/login')
   };
 
   const getAllProduct = async (skip: number, filter: string) => {
@@ -169,7 +170,7 @@ export default function Dashboard() {
               <Dropdown>
                 <MenuButton><PersonIcon /></MenuButton>
                 <Menu slots={{ listbox: Listbox }}>
-                  <MenuItem onClick={createHandleMenuClick('Log out')}>Log out</MenuItem>
+                  <MenuItem onClick={createHandleMenuClick}>Log out</MenuItem>
                 </Menu>
               </Dropdown>
             </Toolbar>
