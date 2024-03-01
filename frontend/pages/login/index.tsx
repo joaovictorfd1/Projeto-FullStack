@@ -14,20 +14,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { ILogin } from '../../interfaces/ILogin';
 import { SignInSchema } from '../../utils/validators/schemas';
 import { login } from '../api/login';
-import { toast } from 'react-toastify';
-
-function Copyright(props: any) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://linkedin.com/in/joaovictorfd">
-        João Delmoni
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import { Alert } from '../../components/Alert';
+import { Copyright } from '../../components/Copyright';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -38,31 +26,12 @@ const initialValues: ILogin = {
 };
 
 export default function SignIn() {
-  // const alert = useAlert()
   const onSubmit = async (body: ILogin) => {
     const user = await login(body);
     if (user.response.status !== 400) {
-      return toast.success('Login efetuado com sucesso', {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      })
+      return Alert('sucess', 'Login efetuado com sucesso')
     }
-    return toast.error(user.response.data.message ,{
-      position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-    })
+    return Alert('error', user.response.data.message)
   };
 
   const formik = useFormik({
