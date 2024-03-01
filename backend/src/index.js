@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const validator = require('validator');
 const User = require('./models/user');
 const authRouter = require('./routes/auth');
+const productsRouter = require('./routes/product')
 const cors = require('cors');
 
 const app = express();
@@ -40,6 +41,10 @@ app.post('/register', async (req, res) => {
 });
 
 app.post('/login', authRouter)
+
+app.use(productsRouter)
+
+// app.get('/products', productsRouter)
 
 app.listen(PORT, HOST);
 
