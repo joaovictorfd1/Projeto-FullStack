@@ -1,6 +1,11 @@
 const request = require('supertest');
 const app = require('../index');
+const axios = require('axios');
 const User = require('../models/user');
+const router = require('../routes/product');
+
+app.use('/', router);
+jest.mock('axios');
 
 describe('Testando Rotas de Cadastro de Usuários', () => {
   beforeEach(async () => {
@@ -77,3 +82,39 @@ describe('Testando rotas de login e cadastro' , () => {
     expect(response.body.error).toBe('Usuário não encontrado');
   })
 })
+
+describe('Teste da listagem de produtos com a API', () => {
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
+  it('deve retornar dados da URL externa sem parâmetros', async () => {
+    axios.get.mockResolvedValue({ data: 'dados simulados' });
+
+    const response = await request(app).get('/products');
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual('dados simulados');
+    expect(axios.get).toHaveBeenCalledWith('https://dummyjson.com/products', { params: {} });
+  });
+
+  it('deve retornar dados da URL externa com parâmetros', async () => {
+    axios.get.mockResolvedValue({ data: 'dados simulados' });
+
+    const response = await request(app).get('/products').query({ q: 'searchTerm' });
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual('dados simulados');
+    expect(axios.get).toHaveBeenCalledWith('https://dummyjson.com/products/search', { params: { q: 'searchTerm' } });
+  });
+
+  it('deve lidar com erros ao chamar a URL externa', async () => {
+    axios.get.mockRejectedValue(new Error('Erro simulado'));
+
+    const response = await request(app).get('/products');
+
+    expect(response.status).toBe(500);
+    expect(response.body).toEqual({ error: 'Erro interno do servidor' });
+    expect(axios.get).toHaveBeenCalledWith('https://dummyjson.com/products', { params: {} });
+  });
+});
