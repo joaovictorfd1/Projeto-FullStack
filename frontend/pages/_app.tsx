@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-export default function App({ Component, pageProps }) {
+function MyApp({ Component, pageProps }) {
   return (
     <>
       <Component {...pageProps} />
@@ -10,3 +10,5 @@ export default function App({ Component, pageProps }) {
     </>
   );
 }
+
+export default MyApp;

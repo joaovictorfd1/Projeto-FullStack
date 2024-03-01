@@ -1,6 +1,6 @@
 import { MenuButton as BaseMenuButton } from '@mui/base/MenuButton';
 import { styled } from '@mui/system';
-import { blue, grey } from './Colors';
+import { blue, grey } from '../Colors';
 
 export const MenuButton = styled(BaseMenuButton)(
   ({ theme }) => `

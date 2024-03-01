@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'; 
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -16,6 +16,7 @@ import { SignInSchema } from '../../utils/validators/schemas';
 import { login } from '../../api/login';
 import { Alert } from '../../components/Alert';
 import { Copyright } from '../../components/Copyright';
+import { useRouter } from 'next/navigation';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -26,10 +27,13 @@ const initialValues: ILogin = {
 };
 
 export default function SignIn() {
+  const router = useRouter()
   const onSubmit = async (body: ILogin) => {
     const user = await login(body);
     if (user && !user?.response?.data) {
-      return Alert('success', 'Login efetuado com sucesso')
+      localStorage.setItem('token', user.token)
+      Alert('success', 'Login efetuado com sucesso')
+      router.push('/dashboard')
     }
     return Alert('error', user?.response?.data.error)
   };
