@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -9,14 +9,19 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import { useFormik } from 'formik';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { ILogin } from '../../interfaces/ILogin';
+import { SignInSchema } from '../../utils/validators/schemas';
+import { login } from '../api/login';
+import { toast } from 'react-toastify';
 
 function Copyright(props: any) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
+      <Link color="inherit" href="https://linkedin.com/in/joaovictorfd">
+        João Delmoni
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -27,15 +32,45 @@ function Copyright(props: any) {
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
+const initialValues: ILogin = {
+  email: "",
+  password: "",
+};
+
 export default function SignIn() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+  // const alert = useAlert()
+  const onSubmit = async (body: ILogin) => {
+    const user = await login(body);
+    if (user.response.status !== 400) {
+      return toast.success('Login efetuado com sucesso', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      })
+    }
+    return toast.error(user.response.data.message ,{
+      position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+    })
   };
+
+  const formik = useFormik({
+    initialValues,
+    onSubmit,
+    validationSchema: SignInSchema,
+    enableReinitialize: true,
+  });
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -53,41 +88,49 @@ export default function SignIn() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            Entrar
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <Box component="form" onSubmit={formik.handleSubmit} sx={{ mt: 1 }}>
             <TextField
+              id="email"
+              label="Usuário"
+              name="email"
               margin="normal"
+              autoFocus
+              value={formik.values.email}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={Boolean(formik.errors.email)}
               required
               fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
             />
             <TextField
+              type='password'
+              id="password"
+              label="Senha"
+              name="password"
               margin="normal"
+              autoFocus
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={Boolean(formik.errors.password)}
               required
               fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
             />
             <Button
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              disabled={!formik.isValid || !formik.dirty}
             >
-              Sign In
+              Login
             </Button>
-            <Grid container sx={{ justifyContent: 'center'}}>
+            <Grid container sx={{ justifyContent: 'center' }}>
               <Grid item>
                 <Link href="/register" variant="body2">
-                  {"Don't have an account? Sign Up"}
+                  {"Não tem uma conta? Cadastre-se"}
                 </Link>
               </Grid>
             </Grid>
