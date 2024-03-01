@@ -4,9 +4,9 @@ import { api } from "../api";
 import { IRegister } from "../../interfaces/IRegister";
 import { IUser } from "../../interfaces/IUser";
 
-const path = "/users/add";
+const path = "/register";
 
-export const login = async (body: IRegister) => {
+export const register = async (body: IRegister) => {
   try {
     const response: AxiosResponse<IUser> = await api.post(path, body)
     return response.data

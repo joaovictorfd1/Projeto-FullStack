@@ -1,3 +1,4 @@
+'use client'
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -14,20 +15,29 @@ import { Copyright } from '../../components/Copyright';
 import { useFormik } from 'formik';
 import { IRegister } from '../../interfaces/IRegister';
 import { SingUpSchema } from '../../utils/validators/schemas';
+import { register } from '../../api/register';
+import { Alert } from '../../components/Alert';
+import { useRouter } from 'next/navigation'
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 const initialValues: IRegister = {
-  firstName: "",
-  lastName: "",
   email: "",
   password: "",
 };
 
 export default function SignUp() {
+  const router = useRouter()
+
+
   const onSubmit = async (body: IRegister) => {
-    console.log(body)
+    const response = await register(body)
+    if (response && !response?.response?.data) {
+      Alert('success', 'Cadastro efetuado com sucesso')
+      return router.push('/login')
+    }
+    return Alert('error', response?.response?.data?.error)
   };
 
   const formik = useFormik({
@@ -57,7 +67,7 @@ export default function SignUp() {
           </Typography>
           <Box component="form" onSubmit={formik.handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
+              {/* <Grid item xs={12} sm={6}>
                 <TextField
                   autoComplete="given-name"
                   name="firstName"
@@ -85,7 +95,7 @@ export default function SignUp() {
                   onBlur={formik.handleBlur}
                   error={Boolean(formik.errors.lastName)}
                 />
-              </Grid>
+              </Grid> */}
               <Grid item xs={12}>
                 <TextField
                   required
