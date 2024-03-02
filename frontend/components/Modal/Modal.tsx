@@ -62,7 +62,7 @@ export default function CourseModal({
       const response = values.id ? await editCourse(values) : await createCourse(values)
       if (response) {
         Alert('success', values.id ? 'Curso editado com sucesso' : 'Curso criado com sucesso')
-        handleClose()
+        handleClose();
       }
     } catch (error) {
       Alert('error', error.details)

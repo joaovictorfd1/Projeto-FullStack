@@ -24,7 +24,7 @@ import AuthGuard from '../../components/Auth/AuthGuard';
 import { Copyright } from '../../components/Copyright/Copyright';
 import { getAllCourses, deleteCourse } from '../../api/courses';
 import { ICourse } from '../../interfaces/ICourse';
-import { Button, Pagination, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, TextField } from '@mui/material';
+import { Button, Grid, Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from '@mui/material';
 import { CourseImage } from '../../components/Img/Img';
 import { useRouter } from 'next/navigation';
 import EditIcon from '@mui/icons-material/Edit';
@@ -34,7 +34,6 @@ import { IFilter } from '../../interfaces/IFilter';
 import ConfirmationModal from '../../components/Modal/ConfirmationModal/ConfirmationModal';
 import { options } from '../../utils/mocks/options';
 import { Alert } from '../../components/Alert/Alert';
-import { Search } from '@mui/icons-material';
 
 const drawerWidth: number = 240;
 
@@ -95,8 +94,6 @@ interface IResponseCourses {
   limit: number
   courses: ICourse[]
 }
-
-
 
 export default function Dashboard() {
   const router = useRouter();
@@ -233,49 +230,51 @@ export default function Dashboard() {
           >
             <Toolbar />
             <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
-              <Box component={'div'} display={'flex'} justifyContent={'space-between'} sx={{ mb: 2 }}>
-                <Box component={'div'} display={'flex'} gap={'8px'}>
-                  <Box component={'div'} display={'flex'}>
-                    <TextField
-                      type="text"
-                      value={filter.search}
-                      onChange={handleFilter}
-                      label="Buscar por nome ou marca"
-                      size="small"
-                    />
-                  </Box>
-                  <Box component={'div'} display={'flex'}>
-                    <TextField
-                      select
-                      type="text"
-                      label="Ordernar por:"
-                      size="small"
-                      SelectProps={{
-                        native: true,
-                      }}
-                      onChange={(e) => setFilter({
-                        ...filter,
-                        sort: e.target.value
-                      })}
-                    >
-                      {options.map((item) => (
-                        <option key={item.value} value={item.value}>
-                          {item.label}
-                        </option>
-                      ))}
-                    </TextField>
-                  </Box>
-                </Box>
-                <Box component={'div'} display={'flex'}>
-                  <Button
-                    type='button'
-                    variant="contained"
-                    onClick={() => setCreateModalOpen(true)}
+              <Grid container alignItems={'center'} mb={'8px'}>
+                <Grid item xs={6}>
+                  <Box component={'div'} display={'flex'} gap={'16px'}>
+                  <TextField
+                    type="text"
+                    value={filter.search}
+                    onChange={handleFilter}
+                    label="Buscar por nome ou marca"
+                    size="small"
+                  />
+
+                  <TextField
+                    select
+                    type="text"
+                    label="Ordernar por:"
+                    size="small"
+                    SelectProps={{
+                      native: true,
+                    }}
+                    onChange={(e) => setFilter({
+                      ...filter,
+                      sort: e.target.value
+                    })}
+                    sx={{ minWidth: '150px' }}
                   >
-                    Novo Curso
-                  </Button>
-                </Box>
-              </Box>
+                    {options.map((item) => (
+                      <option key={item.value} value={item.value}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </TextField>
+                  </Box>
+                </Grid>
+                <Grid item xs={6}>
+                  <Box component={'div'} display={'flex'} justifyContent={'flex-end'}>
+                    <Button
+                      type='button'
+                      variant="contained"
+                      onClick={() => setCreateModalOpen(true)}
+                    >
+                      Novo Curso
+                    </Button>
+                  </Box>
+                </Grid>
+              </Grid>
               <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                   <TableHead>
@@ -310,7 +309,7 @@ export default function Dashboard() {
                           <TableCell align="left">{course.brand}</TableCell>
                           <TableCell align="left">{course.description}</TableCell>
                           <TableCell align="left">{modifiedCategories}</TableCell>
-                          <TableCell align="left">{course.price}</TableCell>
+                          <TableCell align="left">{`R$ ${course.price}`}</TableCell>
                           <TableCell align="left">{course.discountPercentage > 0 ? `${course.discountPercentage}%` : ''}</TableCell>
                           <TableCell align="left">{course.stock}</TableCell>
                           <TableCell align="left">
