@@ -11,7 +11,7 @@ export const getAllCourses = async (skip: number, filter: IFilter) => {
   try {
     const response: AxiosResponse<ICourse[]> = await api.get(path, {
       params: {
-        skip,
+        skip: skip || 0,
         limit: 15,
         q: filter.search,
         sort: filter.sort

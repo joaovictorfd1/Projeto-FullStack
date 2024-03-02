@@ -17,10 +17,12 @@ import { categories } from "../../utils/mocks/category";
 import { ICategories } from "../../interfaces/ICategories";
 import { createCourse, editCourse, getCourseById } from "../../api/courses";
 import { Alert } from "../Alert/Alert";
+import { IFilter } from "../../interfaces/IFilter";
 
 interface ICourseModal {
   open: boolean;
   handleClose: () => void;
+  getAllCourse: (skip: number, filter: IFilter) => Promise<void>
   courseId: number | null;
 }
 
@@ -42,6 +44,7 @@ const initialValues: ICourse = {
 export default function CourseModal({
   open,
   handleClose,
+  getAllCourse,
   courseId,
 }: ICourseModal) {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
@@ -70,10 +73,11 @@ export default function CourseModal({
       const response = values.id ? await editCourse(values) : await createCourse(values)
       if (response) {
         Alert('success', values.id ? 'Curso editado com sucesso' : 'Curso criado com sucesso')
+        getAllCourse(0, {search: '', sort: ''})
         handleClose();
       }
     } catch (error) {
-      Alert('error', error.details)
+      Alert('error', error.details || `Não foi possível ${values.id ? 'editar' : 'criar'} o curso desejado`)
       handleClose();
     }
   };

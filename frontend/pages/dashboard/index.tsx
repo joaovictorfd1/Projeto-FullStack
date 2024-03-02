@@ -350,6 +350,7 @@ export default function Dashboard() {
           handleClose={() => setCreateModalOpen(false)}
           open={createModalOpen}
           courseId={courseSelected?.id}
+          getAllCourse={getAllCourse}
         />
         <ConfirmationModal
           open={deleteModalOpen}
