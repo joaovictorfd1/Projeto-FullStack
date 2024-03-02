@@ -22,8 +22,8 @@ import { Menu } from '@mui/base/Menu';
 import { MenuItem } from '../../components/Menu/MenuItens';
 import AuthGuard from '../../components/Auth/AuthGuard';
 import { Copyright } from '../../components/Copyright/Copyright';
-import { deleteProduct, getAllProducts } from '../../api/products';
-import { IProduct } from '../../interfaces/IProduct';
+import { getAllCourses, deleteCourse } from '../../api/courses';
+import { ICourse } from '../../interfaces/ICourse';
 import { Button, Pagination, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, TextField } from '@mui/material';
 import { ProductImage } from '../../components/Img/Img';
 import { useRouter } from 'next/navigation';
@@ -88,11 +88,11 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
-interface IResponseProducts {
+interface IResponseCourses {
   total: number
   skip: number
   limit: number
-  products: IProduct[]
+  courses: ICourse[]
 }
 
 
@@ -105,8 +105,8 @@ export default function Dashboard() {
   const [open, setOpen] = useState(true);
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [filter, setFilter] = useState<IFilter>({} as IFilter)
-  const [productSelected, setProductedSelected] = useState<IProduct | null>(null)
-  const [productsObjects, setProductsObjects] = useState<IResponseProducts>({} as IResponseProducts)
+  const [productSelected, setProductedSelected] = useState<ICourse | null>(null)
+  const [productsObjects, setProductsObjects] = useState<IResponseCourses>({} as IResponseCourses)
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -118,15 +118,15 @@ export default function Dashboard() {
   };
 
   const getAllProduct = async (skip: number, filter: IFilter) => {
-    const response = await getAllProducts(skip, filter)
+    const response = await getAllCourses(skip, filter)
     if (response) {
       return setProductsObjects(response)
     }
-    return setProductsObjects({} as IResponseProducts)
+    return setProductsObjects({} as IResponseCourses)
   }
 
   const handleDeleteProduct = async () => {
-    const response = await deleteProduct(id)
+    const response = await deleteCourse(id)
     if (response && response.message) {
       Alert('success', response.message)
       getAllProduct((currentPage - 1) * 15, filter)
@@ -292,7 +292,7 @@ export default function Dashboard() {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {productsObjects && productsObjects.products?.map((product) => {
+                    {productsObjects && productsObjects.courses?.map((product) => {
                       const modifiedCategories = product.category.map((item, index, array) => {
                         return index === array.length - 1 ? item : item + ', ';
                       });

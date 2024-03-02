@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Autocomplete, Backdrop, Button, Grid, Modal, Stack, TextField } from "@mui/material";
-import { IProduct } from "../../interfaces/IProduct";
+import { ICourse } from "../../interfaces/ICourse";
 import { useFormik } from "formik";
 import { ProductSchema } from "../../utils/validators/schemas";
 import {
@@ -15,16 +15,16 @@ import ImageInput from "../ImageInput/ImageInput";
 import DefaultPhoto from "../../assets/img/default_photo.png"
 import { categories } from "../../utils/mocks/category";
 import { ICategories } from "../../interfaces/ICategories";
-import { createProduct, editProduct, getProductById } from "../../api/products";
+import { createCourse, editCourse, deleteCourse, getCourseById } from "../../api/courses";
 import { Alert } from "../Alert/Alert";
 
-interface IProductModal {
+interface ICourseModal {
   open: boolean;
   handleClose: () => void;
   productId: number | null;
 }
 
-const initialValues: IProduct = {
+const initialValues: ICourse = {
   title: "",
   description: "",
   price: 0,
@@ -41,14 +41,14 @@ export default function ProductModal({
   open,
   handleClose,
   productId,
-}: IProductModal) {
+}: ICourseModal) {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState<string>(DefaultPhoto.src);
-  const [productSelected, setProductSelected] = useState<IProduct | null>(null)
+  const [productSelected, setProductSelected] = useState<ICourse | null>(null)
 
 
   const getProduct = async (id: number) => {
-    const response = await getProductById(id)
+    const response = await getCourseById(id)
     if (response) {
       formik.setValues(response)
       setImageUrl(response.images[0]);
@@ -56,9 +56,9 @@ export default function ProductModal({
     }
   }
 
-  const onSubmit = async (values: IProduct) => {
+  const onSubmit = async (values: ICourse) => {
     try {
-      const response = values.id ? await editProduct(values) : await createProduct(values)
+      const response = values.id ? await editCourse(values) : await createCourse(values)
       if (response) {
         Alert('success', values.id ? 'Curso editado com sucesso' : 'Curso criado com sucesso')
         handleClose()
