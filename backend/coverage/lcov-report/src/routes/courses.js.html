@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for src/routes/product.js</title>
+    <title>Code coverage report for src/routes/courses.js</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,13 +19,13 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/routes</a> product.js</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/routes</a> courses.js</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">61.84% </span>
+                <span class="strong">62.2% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>107/173</span>
+                <span class='fraction'>107/172</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">61.84% </span>
+                <span class="strong">62.2% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>107/173</span>
+                <span class='fraction'>107/172</span>
             </div>
         
             
@@ -235,8 +235,7 @@
 <a name='L170'></a><a href='#L170'>170</a>
 <a name='L171'></a><a href='#L171'>171</a>
 <a name='L172'></a><a href='#L172'>172</a>
-<a name='L173'></a><a href='#L173'>173</a>
-<a name='L174'></a><a href='#L174'>174</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L173'></a><a href='#L173'>173</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -403,7 +402,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -411,13 +409,13 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const express = require('express');
 // const axios = require('axios');
-const ProductModel = require('../models/product');
+const CourseModel = require('../models/courses');
 const router = express.Router();
 const getNextSequence = require('../utils/index');
-const productSchema = require('../schemas/product');
+const courseSchema = require('../schemas/course');
 &nbsp;
 &nbsp;
-router.get('/products', async (req, res) =&gt; {
+router.get('/courses', async (req, res) =&gt; {
   try {
     // Extrair parâmetros da query da requisição
     const { skip, limit, q, sort } = req.query;
@@ -460,62 +458,62 @@ router.get('/products', async (req, res) =&gt; {
 <span class="cstat-no" title="statement not covered" >      }</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
 &nbsp;
-    // Consulta ao banco de dados para obter os produtos com base no skip e limit
-    const produtos = await ProductModel.find(filter).skip(skipInt).limit(limitInt).sort(sortOption);
+    // Consulta ao banco de dados para obter os cursos com base no skip e limit
+    const courses = await CourseModel.find(filter).skip(skipInt).limit(limitInt).sort(sortOption);
 &nbsp;
-    // Contagem total de produtos no banco de dados
-    const totalProdutos = await ProductModel.countDocuments();
+    // Contagem total de cursos no banco de dados
+    const totalCourses = await CourseModel.countDocuments();
 &nbsp;
-    // Resposta com os produtos filtrados e informações adicionais
+    // Resposta com os cursos filtrados e informações adicionais
     res.json({
-      products: produtos,
+      courses: courses,
       limit: parseInt(limit),
       skip: parseInt(skip),
-      total: totalProdutos,
+      total: totalCourses,
     });
   } <span class="branch-0 cbranch-no" title="branch not covered" >catch (error) {</span>
 <span class="cstat-no" title="statement not covered" >    res.status(500).json({ error: 'Erro interno do servidor' });</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
 })
 &nbsp;
-router.post('/products', async (req, res) =&gt; {
+router.post('/courses', async (req, res) =&gt; {
   try {
     // Validação dos dados
     if (Array.isArray(req.body)) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
-<span class="cstat-no" title="statement not covered" >      // Se o corpo da requisição é uma matriz, criamos vários produtos</span>
-<span class="cstat-no" title="statement not covered" >      const products = await Promise.all(req.body.map(async (productData) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >      // Se o corpo da requisição é uma matriz, criamos vários cursos</span>
+<span class="cstat-no" title="statement not covered" >      const courses = await Promise.all(req.body.map(async (courseData) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >        try {</span>
-<span class="cstat-no" title="statement not covered" >          await productSchema.validate(productData, { abortEarly: false });</span>
+<span class="cstat-no" title="statement not covered" >          await courseSchema.validate(courseData, { abortEarly: false });</span>
 <span class="cstat-no" title="statement not covered" >        } catch (validationError) {</span>
 <span class="cstat-no" title="statement not covered" >          return res.status(400).json({ error: validationError.errors });</span>
 <span class="cstat-no" title="statement not covered" >        }</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >        const productId = await getNextSequence('productId');</span>
-<span class="cstat-no" title="statement not covered" >        const newProduct = new ProductModel({</span>
-<span class="cstat-no" title="statement not covered" >          id: productId,</span>
-<span class="cstat-no" title="statement not covered" >          ...productData,</span>
+<span class="cstat-no" title="statement not covered" >        const courseId = await getNextSequence('courseId');</span>
+<span class="cstat-no" title="statement not covered" >        const newCourse= new CourseModel({</span>
+<span class="cstat-no" title="statement not covered" >          id: courseId,</span>
+<span class="cstat-no" title="statement not covered" >          ...courseData,</span>
 <span class="cstat-no" title="statement not covered" >        });</span>
-<span class="cstat-no" title="statement not covered" >        await newProduct.save();</span>
-<span class="cstat-no" title="statement not covered" >        return newProduct;</span>
+<span class="cstat-no" title="statement not covered" >        await newCourse.save();</span>
+<span class="cstat-no" title="statement not covered" >        return newCourse;</span>
 <span class="cstat-no" title="statement not covered" >      }));</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >      return res.status(200).json({ message: 'Cursos criados com sucesso', products });</span>
+<span class="cstat-no" title="statement not covered" >      return res.status(200).json({ message: 'Cursos criados com sucesso', courses });</span>
     } else {
 &nbsp;
       try {
-        await productSchema.validate(req.body, { abortEarly: false });
+        await courseSchema.validate(req.body, { abortEarly: false });
       } <span class="branch-0 cbranch-no" title="branch not covered" >catch (validationError) {</span>
 <span class="cstat-no" title="statement not covered" >        return res.status(400).json({ error: validationError.errors });</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
-      // Se o corpo da requisição é um único objeto, criamos um único produto
-      const productId = await getNextSequence('productId');
-      const newProduct = new ProductModel({
-        id: productId,
+      // Se o corpo da requisição é um único objeto, criamos um único curso
+      const courseId = await getNextSequence('courseId');
+      const newCourse = new CourseModel({
+        id: courseId,
         ...req.body,
       });
-      await newProduct.save();
-      return res.status(200).json(newProduct);
+      await newCourse.save();
+      return res.status(200).json(newCourse);
     }
   } <span class="branch-0 cbranch-no" title="branch not covered" >catch (error) {</span>
 <span class="cstat-no" title="statement not covered" >    // Resposta com status 500 (Internal Server Error) em caso de erro interno</span>
@@ -523,60 +521,59 @@ router.post('/products', async (req, res) =&gt; {
 <span class="cstat-no" title="statement not covered" >  }</span>
 })
 &nbsp;
-router.get('/products/:id', async (req, res) =&gt; {
-<span class="cstat-no" title="statement not covered" >  const productId = req.params.id</span>
+router.get('/courses/:id', async (req, res) =&gt; {
+<span class="cstat-no" title="statement not covered" >  const courseId = req.params.id</span>
 <span class="cstat-no" title="statement not covered" >  try {</span>
-<span class="cstat-no" title="statement not covered" >    const produto = await ProductModel.findOne({ id: productId });</span>
-<span class="cstat-no" title="statement not covered" >    res.status(200).json(produto)</span>
+<span class="cstat-no" title="statement not covered" >    const course = await CourseModel.findOne({ id: courseId });</span>
+<span class="cstat-no" title="statement not covered" >    res.status(200).json(course)</span>
 <span class="cstat-no" title="statement not covered" >  } catch (error) {</span>
 <span class="cstat-no" title="statement not covered" >    return res.status(500).json({ error: 'Erro interno do servidor' });</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
 <span class="cstat-no" title="statement not covered" >})</span>
 &nbsp;
-router.put('/products/:id', async (req, res) =&gt; {
-  const productId = req.params.id;
+router.put('/courses/:id', async (req, res) =&gt; {
+  const courseId = req.params.id;
 &nbsp;
   try {
-    // Verifica se o produto com o ID fornecido existe no banco de dados
-    const existingProduct = await ProductModel.findOne({ id: productId });
+    // Verifica se o curso com o ID fornecido existe no banco de dados
+    const existingCourse = await CourseModel.findOne({ id: courseId });
 &nbsp;
-    if (!existingProduct) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
+    if (!existingCourse) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
 <span class="cstat-no" title="statement not covered" >      return res.status(404).json({ error: 'Curso não encontrado' });</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
 &nbsp;
     try {
-      await productSchema.validate(req.body, { abortEarly: false });
+      await courseSchema.validate(req.body, { abortEarly: false });
     } <span class="branch-0 cbranch-no" title="branch not covered" >catch (validationError) {</span>
 <span class="cstat-no" title="statement not covered" >      return res.status(400).json({ error: validationError.errors });</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
 &nbsp;
-    // Atualiza os campos do produto com os dados fornecidos no corpo da requisição
-    Object.assign(existingProduct, req.body);
+    // Atualiza os campos do curso com os dados fornecidos no corpo da requisição
+    Object.assign(existingCourse, req.body);
 &nbsp;
     // Salva as alterações no banco de dados
-    await existingProduct.save();
+    await existingCourse.save();
 &nbsp;
-    res.status(200).json(existingProduct);
+    res.status(200).json(existingCourse);
   } <span class="branch-0 cbranch-no" title="branch not covered" >catch (error) {</span>
 <span class="cstat-no" title="statement not covered" >    res.status(500).json({ error: 'Erro interno do servidor' });</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
 });
 &nbsp;
-router.delete('/products/:id', async (req, res) =&gt; {
-  const productId = req.params.id;
+router.delete('/courses/:id', async (req, res) =&gt; {
+  const courseId = req.params.id;
   try {
-    const existingProduct = await ProductModel.findOne({ id: productId });
+    const existingCourse = await CourseModel.findOne({ id: courseId });
 &nbsp;
-    if (!existingProduct) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
+    if (!existingCourse) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
 <span class="cstat-no" title="statement not covered" >      return res.status(404).json({ error: 'Curso não encontrado' });</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
 &nbsp;
-    await existingProduct.deleteOne({ id: productId })
+    await existingCourse.deleteOne({ id: courseId })
 &nbsp;
     return res.status(200).json({ message: 'Curso excluído com sucesso' });
 &nbsp;
   } <span class="branch-0 cbranch-no" title="branch not covered" >catch (error) {</span>
-<span class="cstat-no" title="statement not covered" >    console.log(error)</span>
 <span class="cstat-no" title="statement not covered" >    res.status(500).json({ error: 'Erro interno do servidor' });</span>
 <span class="cstat-no" title="statement not covered" >  }</span>
 })
@@ -589,7 +586,7 @@ module.exports = router;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-03-02T17:50:34.705Z
+                at 2024-03-02T18:08:20.336Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

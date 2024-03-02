@@ -2,7 +2,24 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const validator = require('validator');
 const User = require('../models/user');
+const userSchema = require('../schemas/user');
+
+router.post('/register', async (req, res) => {
+  try {
+    const newUser = new User(req.body)
+    try {
+      await userSchema.validate(req.body, { abortEarly: false });
+    } catch (validationError) {
+      return res.status(400).json({ error: validationError.errors });
+    }
+    await newUser.save();
+    res.status(200).json(newUser)
+  } catch (e) {
+    res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+});
 
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;

@@ -2,9 +2,9 @@ const request = require('supertest');
 const app = require('../index');
 const axios = require('axios');
 const User = require('../models/user');
-const router = require('../routes/product');
-const ProductModel = require('../models/product');
+const router = require('../routes/courses');
 const getNextSequence = require('../utils');
+const CourseModel = require('../models/courses');
 
 app.use('/', router);
 
@@ -29,7 +29,7 @@ describe('Testando Rotas de Cadastro de Usuários', () => {
       .expect(400);
 
     // Realize as asserções necessárias sobre a resposta
-    expect(response.body.error).toBe('E-mail inválido');
+    expect(response.body.error[0]).toBe('O e-mail fornecido é inválido');
   });
 
   test('Deve lidar com erro de senha', async () => {
@@ -39,7 +39,7 @@ describe('Testando Rotas de Cadastro de Usuários', () => {
       .expect(400);
 
     // Realize as asserções necessárias sobre a resposta
-    expect(response.body.error).toBe('Senha deve ter no mínimo 6 caracteres');
+    expect(response.body.error[0]).toBe('A senha deve ter pelo menos 6 caracteres');
   });
 });
 
@@ -84,95 +84,94 @@ describe('Testando rotas de login e cadastro' , () => {
   })
 })
 
-// Teste para GET /products
-describe('Testando rotas de produtos', () => {
+describe('Testando rotas de cursos', () => {
 
-  it('deve retornar a lista de produtos', async () => {
-    const response = await request(app).get('/products').query({skip: 0, limit: 15});
+  it('deve retornar a lista de cursos', async () => {
+    const response = await request(app).get('/courses').query({skip: 0, limit: 15});
     expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty('products');
-    expect(response.body.products).toBeInstanceOf(Array);
+    expect(response.body).toHaveProperty('courses');
+    expect(response.body.courses).toBeInstanceOf(Array);
   });
 
-  it('deve criar um novo produto', async () => {
-    const newProduct = {
-      title: 'Novo Produto',
-      description: 'Descrição do Novo Produto',
+  it('deve criar um novo curso', async () => {
+    const newCourse = {
+      title: 'Novo Curso',
+      description: 'Descrição do Novo Curso',
       price: 19.99,
       brand: 'Marca Nova',
       category: ['Categoria Nova'],
-      thumbnail: 'https://example.com/novo-produto-thumbnail.jpg',
-      images: ['https://example.com/novo-produto-imagem1.jpg'],
+      thumbnail: 'https://example.com/novo-curso-thumbnail.jpg',
+      images: ['https://example.com/novo-curso-imagem1.jpg'],
       rating: 0,
       discountPercentage: 10,
       stock: 1,
     };
 
-    const response = await request(app).post('/products').send(newProduct);
+    const response = await request(app).post('/courses').send(newCourse);
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('id');
   });
 
-  it('deve atualizar um produto existente', async () => {
-    const productId = await getNextSequence('productId');
-    // Primeiro, crie um produto para ser atualizado
-    const newProduct = new ProductModel({
-      id: productId,
-      title: 'Novo Produto',
-      description: 'Descrição do Novo Produto',
+  it('deve atualizar um curso existente', async () => {
+    const courseId = await getNextSequence('courseId');
+    // Primeiro, crie um curso para ser atualizado
+    const newCourse = new CourseModel({
+      id: courseId,
+      title: 'Novo Curso',
+      description: 'Descrição do Novo Curso',
       price: 19.99,
       brand: 'Marca Nova',
       category: ['Categoria Nova'],
-      thumbnail: 'https://example.com/novo-produto-thumbnail.jpg',
-      images: ['https://example.com/novo-produto-imagem1.jpg'],
+      thumbnail: 'https://example.com/novo-curso-thumbnail.jpg',
+      images: ['https://example.com/novo-curso-imagem1.jpg'],
       rating: 0,
       discountPercentage: 10,
       stock: 1,
     });
-    await newProduct.save();
+    await newCourse.save();
 
-    // Em seguida, atualize o produto
+    // Em seguida, atualize o Curso
     const updatedProduct = {
-      title: 'Produto Atualizado',
-      description: 'Descrição do Produto Atualizado',
+      title: 'Curso Atualizado',
+      description: 'Descrição do Curso Atualizado',
       price: 300.00,
       brand: 'Marca Atualizada',
       category: ['Categoria Nova', 'Categoria atualizada'],
-      thumbnail: 'https://example.com/novo-produto-thumbnail.jpg',
-      images: ['https://example.com/novo-produto-imagem1.jpg'],
+      thumbnail: 'https://example.com/novo-curso-thumbnail.jpg',
+      images: ['https://example.com/novo-curso-imagem1.jpg'],
       rating: 0,
       discountPercentage: 10,
       stock: 1,
     };
 
-    const response = await request(app).put(`/products/${newProduct.id}`).send(updatedProduct);
+    const response = await request(app).put(`/courses/${newCourse.id}`).send(updatedProduct);
     expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty('id', newProduct.id);
+    expect(response.body).toHaveProperty('id', newCourse.id);
     expect(response.body.title).toBe(updatedProduct.title);
     expect(response.body.price).toBe(updatedProduct.price);
   });
 
-  it('deve excluir um produto existente', async () => {
+  it('deve excluir um curso existente', async () => {
     const productId = await getNextSequence('productId');
-    // Primeiro, crie um produto para ser excluído
-    const newProduct = new ProductModel({
+    // Primeiro, crie um curso para ser excluído
+    const newCourse = new CourseModel({
       id: productId,
-      title: 'Produto a ser Excluído',
-      description: 'Descrição do Produto a ser Excluído',
+      title: 'Curso a ser Excluído',
+      description: 'Descrição do Curso a ser Excluído',
       price: 49.99,
       brand: 'Marca a ser Excluída',
       category: ['Categoria a ser Excluída'],
-      thumbnail: 'https://example.com/produto-a-ser-excluido-thumbnail.jpg',
-      images: ['https://example.com/produto-a-ser-excluido-imagem1.jpg'],
+      thumbnail: 'https://example.com/curso-a-ser-excluido-thumbnail.jpg',
+      images: ['https://example.com/curso-a-ser-excluido-imagem1.jpg'],
       rating: 0,
       discountPercentage: 10,
       stock: 1,
     });
-    await newProduct.save();
+    await newCourse.save();
 
-    // Em seguida, exclua o produto
-    const response = await request(app).delete(`/products/${newProduct.id}`);
+    // Em seguida, exclua o curso
+    const response = await request(app).delete(`/courses/${newCourse.id}`);
     expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty('message', 'Produto excluído com sucesso');
+    expect(response.body).toHaveProperty('message', 'Curso excluído com sucesso');
   });
 });
