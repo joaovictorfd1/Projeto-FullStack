@@ -40,11 +40,9 @@ app.post('/register', async (req, res) => {
   }
 });
 
-app.post('/login', authRouter)
+app.use(authRouter)
 
 app.use(productsRouter)
-
-// app.get('/products', productsRouter)
 
 app.listen(PORT, HOST);
 

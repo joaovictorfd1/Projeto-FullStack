@@ -9,7 +9,7 @@ const productSchema = require('../schemas');
 router.get('/products', async (req, res) => {
   try {
     // Extrair parâmetros da query da requisição
-    const { skip, limit, q } = req.query;
+    const { skip, limit, q, sort } = req.query;
 
     // Variavel para filtro
     let filter = {}
@@ -31,8 +31,26 @@ router.get('/products', async (req, res) => {
     const skipInt = parseInt(skip);
     const limitInt = parseInt(limit);
 
+    // Configurar a opção de ordenação com base no parâmetro 'sort'
+    let sortOption = {
+      title: 1,
+    };
+    if (sort) {
+      // Verificar se 'sort' é 'title' ou 'brand' e definir a opção de ordenação correspondente
+      if (sort.toLowerCase() === 'title') {
+        sortOption = {
+          title: 1
+        };
+      }
+      if (sort.toLowerCase() === 'brand') {
+        sortOption = {
+          brand: 1
+        };
+      }
+    }
+
     // Consulta ao banco de dados para obter os produtos com base no skip e limit
-    const produtos = await ProductModel.find(filter).skip(skipInt).limit(limitInt).sort({ id: 1 });
+    const produtos = await ProductModel.find(filter).skip(skipInt).limit(limitInt).sort(sortOption);
 
     // Contagem total de produtos no banco de dados
     const totalProdutos = await ProductModel.countDocuments();
