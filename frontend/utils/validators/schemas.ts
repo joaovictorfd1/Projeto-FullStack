@@ -20,5 +20,5 @@ export const ProductSchema = Yup.object().shape({
   brand: Yup.string(),
   category: Yup.array().of(Yup.string()),
   thumbnail: Yup.string().url('A thumbnail deve ser uma URL válida').nullable(),
-  images: Yup.array().of(Yup.string().url('As imagens devem ser URLs válidas')),
+  images: Yup.array().of(Yup.string()),
 });

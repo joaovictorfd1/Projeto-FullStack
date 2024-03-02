@@ -10,7 +10,7 @@ export const mainListItems = (
       <ListItemIcon>
         <ShoppingCartIcon />
       </ListItemIcon>
-      <ListItemText primary="Produtos" />
+      <ListItemText primary="Cursos" />
     </ListItemButton>
   </React.Fragment>
 );

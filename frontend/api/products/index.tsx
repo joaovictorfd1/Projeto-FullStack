@@ -22,3 +22,39 @@ export const getAllProducts = async (skip: number, filter: IFilter) => {
     return error
   }
 }
+
+export const getProductById = async (id: number) => {
+  try {
+    const response: AxiosResponse<IProduct> = await api.get(`${path}/${id}`)
+    return response.data
+  } catch (error) {
+    return error
+  }
+}
+
+export const createProduct = async (body: IProduct) => {
+  try {
+    const response: AxiosResponse<IProduct> = await api.post(path, body)
+    return response.data
+  } catch (error) {
+    return error
+  }
+}
+
+export const editProduct = async (body: IProduct) => {
+  try {
+    const response: AxiosResponse<IProduct> = await api.put(`${path}/${body.id}`, body)
+    return response.data
+  } catch (error) {
+    return error
+  }
+}
+
+export const deleteProduct = async (id: number) => {
+  try {
+    const response: AxiosResponse<IProduct> = await api.delete(`${path}/${id}`)
+    return response.data
+  } catch (error) {
+    return error
+  }
+}

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
@@ -22,7 +22,7 @@ import { Menu } from '@mui/base/Menu';
 import { MenuItem } from '../../components/Menu/MenuItens';
 import AuthGuard from '../../components/Auth/AuthGuard';
 import { Copyright } from '../../components/Copyright/Copyright';
-import { getAllProducts } from '../../api/products';
+import { deleteProduct, getAllProducts } from '../../api/products';
 import { IProduct } from '../../interfaces/IProduct';
 import { Button, Pagination, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, TextField } from '@mui/material';
 import { ProductImage } from '../../components/Img/Img';
@@ -31,6 +31,9 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ProductModal from '../../components/Modal/Modal';
 import { IFilter } from '../../interfaces/IFilter';
+import ConfirmationModal from '../../components/Modal/ConfirmationModal/ConfirmationModal';
+import { options } from '../../utils/mocks/options';
+import { Alert } from '../../components/Alert/Alert';
 
 const drawerWidth: number = 240;
 
@@ -96,14 +99,18 @@ interface IResponseProducts {
 
 export default function Dashboard() {
   const router = useRouter();
-  const [createModalOpen, setCreateModalOpen] = React.useState<boolean>(false);
-  const [open, setOpen] = React.useState(true);
-  const [currentPage, setCurrentPage] = React.useState<number>(1)
-  const [filter, setFilter] = React.useState<IFilter>({} as IFilter)
-  const [productsObjects, setProductsObjects] = React.useState<IResponseProducts>({} as IResponseProducts)
+  const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
+  const [createModalOpen, setCreateModalOpen] = useState<boolean>(false);
+  const [id, setId] = useState<number>(0)
+  const [open, setOpen] = useState(true);
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [filter, setFilter] = useState<IFilter>({} as IFilter)
+  const [productSelected, setProductedSelected] = useState<IProduct | null>(null)
+  const [productsObjects, setProductsObjects] = useState<IResponseProducts>({} as IResponseProducts)
   const toggleDrawer = () => {
     setOpen(!open);
   };
+
 
   const createHandleMenuClick = () => {
     localStorage.removeItem('token')
@@ -116,6 +123,16 @@ export default function Dashboard() {
       return setProductsObjects(response)
     }
     return setProductsObjects({} as IResponseProducts)
+  }
+
+  const handleDeleteProduct = async () => {
+    const response = await deleteProduct(id)
+    if (response && response.message) {
+      Alert('success', response.message)
+      getAllProduct((currentPage - 1) * 15, filter)
+      return setDeleteModalOpen(false)
+    }
+    Alert('error', response.details)
   }
 
   const handlePaginationChange = (
@@ -131,28 +148,14 @@ export default function Dashboard() {
 
   const handleFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
-
-    console.log(value)
-
     setFilter({
       ...filter,
       search: value,
     });
   };
 
-  const options = [
-    {
-      value: 'title',
-      label: 'Título',
-    },
-    {
-      value: 'brand',
-      label: 'Marca',
-    }
-  ];
 
-
-  React.useEffect(() => {
+  useEffect(() => {
     getAllProduct((currentPage - 1) * 15, filter)
   }, [currentPage, filter])
 
@@ -186,7 +189,7 @@ export default function Dashboard() {
                 noWrap
                 sx={{ flexGrow: 1 }}
               >
-                Listagem de Produtos
+                Listagem de Cursos
               </Typography>
               <Dropdown>
                 <MenuButton><PersonIcon /></MenuButton>
@@ -269,7 +272,7 @@ export default function Dashboard() {
                     variant="contained"
                     onClick={() => setCreateModalOpen(true)}
                   >
-                    Novo Produto
+                    Novo Curso
                   </Button>
                 </Box>
               </Box>
@@ -281,10 +284,10 @@ export default function Dashboard() {
                       <TableCell align='left'>Nome</TableCell>
                       <TableCell align='left'>Marca</TableCell>
                       <TableCell align="left">Descrição</TableCell>
+                      <TableCell align="left">Categoria</TableCell>
                       <TableCell align="left">Preço</TableCell>
                       <TableCell align="left">Desconto (%)</TableCell>
                       <TableCell align="left">Estoque</TableCell>
-                      <TableCell align="left">Categoria</TableCell>
                       <TableCell />
                     </TableRow>
                   </TableHead>
@@ -306,14 +309,24 @@ export default function Dashboard() {
                           </TableCell>
                           <TableCell align="left">{product.brand}</TableCell>
                           <TableCell align="left">{product.description}</TableCell>
+                          <TableCell align="left">{modifiedCategories}</TableCell>
                           <TableCell align="left">{product.price}</TableCell>
                           <TableCell align="left">{product.discountPercentage}</TableCell>
                           <TableCell align="left">{product.stock}</TableCell>
-                          <TableCell align="left">{modifiedCategories}</TableCell>
                           <TableCell align="left">
                             <Box component={'div'} display={'flex'} gap={'8px'}>
-                              <EditIcon sx={{ cursor: 'pointer' }} />
-                              <DeleteIcon sx={{ cursor: 'pointer' }} />
+                              <Box component={'div'} display={'flex'} onClick={() => {
+                                setCreateModalOpen(true)
+                                setProductedSelected(product)
+                              }}>
+                                <EditIcon sx={{ cursor: 'pointer', color: '#1976d2' }} />
+                              </Box>
+                              <Box component={'div'} display={'flex'} onClick={() => {
+                                setDeleteModalOpen(true)
+                                setId(product.id)
+                              }}>
+                                <DeleteIcon sx={{ cursor: 'pointer', color: 'red' }} />
+                              </Box>
                             </Box>
                           </TableCell>
                         </TableRow>
@@ -336,8 +349,13 @@ export default function Dashboard() {
         <ProductModal
           handleClose={() => setCreateModalOpen(false)}
           open={createModalOpen}
-          product={null}
+          productId={productSelected?.id}
         />
+        <ConfirmationModal
+          open={deleteModalOpen}
+          handleClose={() => setDeleteModalOpen(false)}
+          confirmAction={() => handleDeleteProduct()}
+          cancelAction={() => setDeleteModalOpen(false)} />
       </ThemeProvider>
     </AuthGuard>
   );

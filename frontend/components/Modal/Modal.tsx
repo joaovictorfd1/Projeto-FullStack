@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Backdrop, Button, Grid, Modal, Stack } from "@mui/material";
+import { Autocomplete, Backdrop, Button, Grid, Modal, Stack, TextField } from "@mui/material";
 import { IProduct } from "../../interfaces/IProduct";
 import { useFormik } from "formik";
 import { ProductSchema } from "../../utils/validators/schemas";
@@ -10,13 +10,18 @@ import {
   ModalContent,
   ModalTitle,
   PreviewImage,
-} from "./style";
+} from "./styles";
 import ImageInput from "../ImageInput/ImageInput";
+import DefaultPhoto from "../../assets/img/default_photo.png"
+import { categories } from "../../utils/mocks/category";
+import { ICategories } from "../../interfaces/ICategories";
+import { createProduct, editProduct, getProductById } from "../../api/products";
+import { Alert } from "../Alert/Alert";
 
 interface IProductModal {
   open: boolean;
   handleClose: () => void;
-  product: IProduct | null;
+  productId: number | null;
 }
 
 const initialValues: IProduct = {
@@ -35,21 +40,31 @@ const initialValues: IProduct = {
 export default function ProductModal({
   open,
   handleClose,
-  product,
+  productId,
 }: IProductModal) {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [imageUrl, setImageUrl] = useState<string>("");
-  const [priceInputValue, setPriceInputValue] = useState<string>("");
+  const [imageUrl, setImageUrl] = useState<string>(DefaultPhoto.src);
+  const [productSelected, setProductSelected] = useState<IProduct | null>(null)
+
+
+  const getProduct = async (id: number) => {
+    const response = await getProductById(id)
+    if (response) {
+      formik.setValues(response)
+      setImageUrl(response.images[0]);
+      setProductSelected(response)
+    }
+  }
 
   const onSubmit = async (values: IProduct) => {
     try {
-      // if (product && token && productId) {
-      //   await editProduct(token, values, productId);
-      // } else if (token) {
-      //   await addProduct(info.token, values);
-      // }
-      // handleClose();
+      const response = values.id ? await editProduct(values) : await createProduct(values)
+      if (response) {
+        Alert('success', values.id ? 'Curso editado com sucesso' : 'Curso criado com sucesso')
+        handleClose()
+      }
     } catch (error) {
+      Alert('error', error.details)
       handleClose();
     }
   };
@@ -74,19 +89,10 @@ export default function ProductModal({
   }, [selectedImage]);
 
   useEffect(() => {
-    if (product) {
-      setImageUrl(product.images[0]);
-      const numericValue = product.price / 100;
-      const formattedValue = numericValue.toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "BRL",
-      });
-      formik.setValues({
-        ...product,
-      });
-      setPriceInputValue(formattedValue);
+    if (productId) {
+      getProduct(productId)
     }
-  }, [product]);
+  }, [productId])
 
   const handlePrice = (event: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = event?.target.value;
@@ -99,11 +105,31 @@ export default function ProductModal({
       currency: "BRL",
     });
 
-    setPriceInputValue(formattedValue);
-    formik.setFieldValue("preco", numeric.toFixed(2).toString());
+    formik.setFieldValue("price", numeric.toFixed(2).toString());
   };
 
-  const title = product ? "Editar Produto" : "Criar Produto";
+  const handleDiscountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // Garante que o valor seja um número
+    const rawValue = event?.target.value;
+    const numeric = parseFloat(rawValue.replace(/[^0-9]/g, ""));
+
+    // Verifica se o valor não é um número ou é NaN, define como zero
+    if (Number.isNaN(numeric)) {
+      return;
+    }
+
+    // Garante que o valor esteja na faixa de 0 a 100
+    const discountValue = Math.min(Math.max(numeric, 0), 100);
+
+    // Atualiza o estado do Formik com o valor percentual
+    formik.setFieldValue('discountPercentage', discountValue);
+  };
+
+  const handleCategoriesChange = (categories: Array<ICategories>) => {
+    formik.setFieldValue('category', categories.map(item => item.value));
+  }
+
+  const title = productSelected ? "Editar Curso" : "Criar Curso";
 
   return (
     <Modal
@@ -130,66 +156,120 @@ export default function ProductModal({
               <Grid item xs={12} display="flex" justifyContent="center">
                 <ImageInput onChange={setSelectedImage} />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} sm={6}>
                 <Input
-                  id="nome"
-                  label="Nome"
+                  id="title"
+                  label="Titulo"
                   variant="outlined"
                   type="text"
                   value={formik.values.title}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  name="nome"
+                  name="title"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Input
-                  id="marca"
+                  id="brand"
+                  name="brand"
                   label="Marca"
                   variant="outlined"
                   type="text"
-                  value={formik.values.title}
+                  value={formik.values.brand}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  name="marca"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Autocomplete
+                  multiple
+                  id="categories"
+                  options={categories}
+                  getOptionLabel={(option) => option.label}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Categorias"
+                      placeholder="Categorias"
+                    />
+                  )}
+                  onChange={(_, value) => handleCategoriesChange(value)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Input
+                  id="description"
+                  name="description"
+                  label="Descrição"
+                  variant="outlined"
+                  type="text"
+                  value={formik.values.description}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  multiline
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Input
-                  id="preco"
+                  id="price"
+                  name="price"
                   label="Preço"
                   variant="outlined"
                   type="text"
-                  value={priceInputValue}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.price}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     handlePrice(e)
                   }
-                  onBlur={formik.handleBlur}
-                  name="preco"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Input
-                  id="estoque"
+                  id="discountPercentage"
+                  name="discountPercentage"
+                  label="Desconto (em %)"
+                  variant="outlined"
+                  type="text"
+                  value={formik.values.discountPercentage}
+                  onBlur={formik.handleBlur}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    handleDiscountChange(e)
+                  }
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Input
+                  id="rating"
+                  name="rating"
+                  label="Avaliação (de 0 a 10)"
+                  variant="outlined"
+                  type="number"
+                  value={formik.values.rating}
+                  onChange={(e) => {
+                    if (Number(e.target.value) <= 10 && Number(e.target.value) >= 0) {
+                      formik.setFieldValue('rating', e.target.value);
+                    }
+                  }}
+                  onBlur={formik.handleBlur}
+                  inputProps={{
+                    min: 0, max: 10,
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Input
+                  id="stock"
+                  name="stock"
                   label="Estoque"
                   variant="outlined"
                   type="number"
-                  value={formik.values.title}
+                  value={formik.values.stock}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  name="qt_estoque"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Input
-                  id="vendas"
-                  label="Vendas"
-                  variant="outlined"
-                  type="number"
-                  value={formik.values.title}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  name="qt_vendas"
+                  inputProps={{
+                    min: 0,
+                  }}
                 />
               </Grid>
               <Grid item xs={6} display="flex" justifyContent="center">
