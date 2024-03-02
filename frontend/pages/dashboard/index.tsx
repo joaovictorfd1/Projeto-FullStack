@@ -30,6 +30,7 @@ import { useRouter } from 'next/navigation';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ProductModal from '../../components/Modal/Modal';
+import { IFilter } from '../../interfaces/IFilter';
 
 const drawerWidth: number = 240;
 
@@ -91,12 +92,14 @@ interface IResponseProducts {
   products: IProduct[]
 }
 
+
+
 export default function Dashboard() {
   const router = useRouter();
   const [createModalOpen, setCreateModalOpen] = React.useState<boolean>(false);
   const [open, setOpen] = React.useState(true);
   const [currentPage, setCurrentPage] = React.useState<number>(1)
-  const [filter, setFilter] = React.useState<string>('')
+  const [filter, setFilter] = React.useState<IFilter>({} as IFilter)
   const [productsObjects, setProductsObjects] = React.useState<IResponseProducts>({} as IResponseProducts)
   const toggleDrawer = () => {
     setOpen(!open);
@@ -107,7 +110,7 @@ export default function Dashboard() {
     return router.push('/login')
   };
 
-  const getAllProduct = async (skip: number, filter: string) => {
+  const getAllProduct = async (skip: number, filter: IFilter) => {
     const response = await getAllProducts(skip, filter)
     if (response) {
       return setProductsObjects(response)
@@ -131,8 +134,22 @@ export default function Dashboard() {
 
     console.log(value)
 
-    setFilter(value);
+    setFilter({
+      ...filter,
+      search: value,
+    });
   };
+
+  const options = [
+    {
+      value: 'title',
+      label: 'Título',
+    },
+    {
+      value: 'brand',
+      label: 'Marca',
+    }
+  ];
 
 
   React.useEffect(() => {
@@ -213,14 +230,38 @@ export default function Dashboard() {
             <Toolbar />
             <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
               <Box component={'div'} display={'flex'} justifyContent={'space-between'} sx={{ mb: 2 }}>
-                <Box component={'div'} display={'flex'}>
-                  <TextField
-                    type="text"
-                    value={filter}
-                    onChange={handleFilter}
-                    label="Buscar por nome"
-                    size="small"
-                  />
+                <Box component={'div'} display={'flex'} gap={'8px'}>
+                  <Box component={'div'} display={'flex'}>
+                    <TextField
+                      type="text"
+                      value={filter.search}
+                      onChange={handleFilter}
+                      label="Buscar por nome ou marca"
+                      size="small"
+                    />
+                  </Box>
+                  <Box component={'div'} display={'flex'}>
+                    <TextField
+                      select
+                      type="text"
+                      label="Ordernar por:"
+                      size="small"
+                      helperText="Selecione o tipo de ordenação"
+                      SelectProps={{
+                        native: true,
+                      }}
+                      onChange={(e) => setFilter({
+                        ...filter,
+                        sort: e.target.value
+                      })}
+                    >
+                      {options.map((item) => (
+                        <option key={item.value} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </TextField>
+                  </Box>
                 </Box>
                 <Box component={'div'} display={'flex'}>
                   <Button
@@ -248,31 +289,36 @@ export default function Dashboard() {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {productsObjects && productsObjects.products?.map((product) => (
-                      <TableRow
-                        key={product.id}
-                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                      >
-                        <TableCell>
-                          <ProductImage src={product.images[0]} alt={product.title} />
-                        </TableCell>
-                        <TableCell component="th" scope="row">
-                          {product.title}
-                        </TableCell>
-                        <TableCell align="left">{product.brand}</TableCell>
-                        <TableCell align="left">{product.description}</TableCell>
-                        <TableCell align="left">{product.price}</TableCell>
-                        <TableCell align="left">{product.discountPercentage}</TableCell>
-                        <TableCell align="left">{product.stock}</TableCell>
-                        <TableCell align="left">{product.category}</TableCell>
-                        <TableCell align="left">
-                          <Box component={'div'} display={'flex'} gap={'8px'}>
-                            <EditIcon sx={{ cursor: 'pointer' }} />
-                            <DeleteIcon sx={{ cursor: 'pointer' }} />
-                          </Box>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    {productsObjects && productsObjects.products?.map((product) => {
+                      const modifiedCategories = product.category.map((item, index, array) => {
+                        return index === array.length - 1 ? item : item + ', ';
+                      });
+                      return (
+                        <TableRow
+                          key={product.id}
+                          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                        >
+                          <TableCell>
+                            <ProductImage src={product.images[0]} alt={product.title} />
+                          </TableCell>
+                          <TableCell component="th" scope="row">
+                            {product.title}
+                          </TableCell>
+                          <TableCell align="left">{product.brand}</TableCell>
+                          <TableCell align="left">{product.description}</TableCell>
+                          <TableCell align="left">{product.price}</TableCell>
+                          <TableCell align="left">{product.discountPercentage}</TableCell>
+                          <TableCell align="left">{product.stock}</TableCell>
+                          <TableCell align="left">{modifiedCategories}</TableCell>
+                          <TableCell align="left">
+                            <Box component={'div'} display={'flex'} gap={'8px'}>
+                              <EditIcon sx={{ cursor: 'pointer' }} />
+                              <DeleteIcon sx={{ cursor: 'pointer' }} />
+                            </Box>
+                          </TableCell>
+                        </TableRow>
+                      )
+                    })}
                   </TableBody>
                 </Table>
               </TableContainer>

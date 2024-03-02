@@ -40,7 +40,6 @@ export default function ProductModal({
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState<string>("");
   const [priceInputValue, setPriceInputValue] = useState<string>("");
-  const token = localStorage.getItem('token')
 
   const onSubmit = async (values: IProduct) => {
     try {
