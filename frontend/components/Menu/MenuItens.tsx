@@ -1,6 +1,6 @@
 import { MenuItem as BaseMenuItem, menuItemClasses } from '@mui/base/MenuItem';
 import { styled } from '@mui/system';
-import { blue, grey } from '../Colors';
+import { blue, grey } from '../Colors/Colors';
 
 export const MenuItem = styled(BaseMenuItem)(
   ({ theme }) => `

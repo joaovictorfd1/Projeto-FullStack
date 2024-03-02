@@ -1,5 +1,5 @@
 export interface IProduct {
-  id: number
+  id?: number
   title: string
   description: string
   price: number
@@ -8,6 +8,6 @@ export interface IProduct {
   stock: number
   brand: string
   category: string[]
-  thumbnail: string
+  thumbnail?: string
   images: string[]
 }

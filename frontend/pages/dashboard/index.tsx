@@ -20,13 +20,16 @@ import { MenuButton } from '../../components/Menu/MenuButton';
 import { Listbox } from '../../components/List/ListBox';
 import { Menu } from '@mui/base/Menu';
 import { MenuItem } from '../../components/Menu/MenuItens';
-import AuthGuard from '../../components/AuthGuard';
-import { Copyright } from '../../components/Copyright';
+import AuthGuard from '../../components/Auth/AuthGuard';
+import { Copyright } from '../../components/Copyright/Copyright';
 import { getAllProducts } from '../../api/products';
 import { IProduct } from '../../interfaces/IProduct';
 import { Button, Pagination, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, TextField } from '@mui/material';
-import { ProductImage } from '../../components/Img';
+import { ProductImage } from '../../components/Img/Img';
 import { useRouter } from 'next/navigation';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ProductModal from '../../components/Modal/Modal';
 
 const drawerWidth: number = 240;
 
@@ -90,6 +93,7 @@ interface IResponseProducts {
 
 export default function Dashboard() {
   const router = useRouter();
+  const [createModalOpen, setCreateModalOpen] = React.useState<boolean>(false);
   const [open, setOpen] = React.useState(true);
   const [currentPage, setCurrentPage] = React.useState<number>(1)
   const [filter, setFilter] = React.useState<string>('')
@@ -222,7 +226,7 @@ export default function Dashboard() {
                   <Button
                     type='button'
                     variant="contained"
-                    onClick={() => console.log('abrir modal')}
+                    onClick={() => setCreateModalOpen(true)}
                   >
                     Novo Produto
                   </Button>
@@ -240,6 +244,7 @@ export default function Dashboard() {
                       <TableCell align="left">Desconto (%)</TableCell>
                       <TableCell align="left">Estoque</TableCell>
                       <TableCell align="left">Categoria</TableCell>
+                      <TableCell />
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -260,6 +265,12 @@ export default function Dashboard() {
                         <TableCell align="left">{product.discountPercentage}</TableCell>
                         <TableCell align="left">{product.stock}</TableCell>
                         <TableCell align="left">{product.category}</TableCell>
+                        <TableCell align="left">
+                          <Box component={'div'} display={'flex'} gap={'8px'}>
+                            <EditIcon sx={{ cursor: 'pointer' }} />
+                            <DeleteIcon sx={{ cursor: 'pointer' }} />
+                          </Box>
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -276,6 +287,11 @@ export default function Dashboard() {
             )}
           </Box>
         </Box>
+        <ProductModal
+          handleClose={() => setCreateModalOpen(false)}
+          open={createModalOpen}
+          product={null}
+        />
       </ThemeProvider>
     </AuthGuard>
   );

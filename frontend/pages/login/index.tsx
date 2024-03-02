@@ -14,8 +14,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { ILogin } from '../../interfaces/ILogin';
 import { SignInSchema } from '../../utils/validators/schemas';
 import { login } from '../../api/login';
-import { Alert } from '../../components/Alert';
-import { Copyright } from '../../components/Copyright';
+import { Alert } from '../../components/Alert/Alert';
+import { Copyright } from '../../components/Copyright/Copyright';
 import { useRouter } from 'next/navigation';
 
 // TODO remove, this demo shouldn't need to reset the theme.

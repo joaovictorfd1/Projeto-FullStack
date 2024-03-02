@@ -11,12 +11,12 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Copyright } from '../../components/Copyright';
+import { Copyright } from '../../components/Copyright/Copyright';
 import { useFormik } from 'formik';
 import { IRegister } from '../../interfaces/IRegister';
 import { SingUpSchema } from '../../utils/validators/schemas';
 import { register } from '../../api/register';
-import { Alert } from '../../components/Alert';
+import { Alert } from '../../components/Alert/Alert';
 import { useRouter } from 'next/navigation'
 
 // TODO remove, this demo shouldn't need to reset the theme.
