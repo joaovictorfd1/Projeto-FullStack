@@ -21,7 +21,7 @@ import { Alert } from "../Alert/Alert";
 interface ICourseModal {
   open: boolean;
   handleClose: () => void;
-  productId: number | null;
+  courseId: number | null;
 }
 
 const initialValues: ICourse = {
@@ -37,14 +37,14 @@ const initialValues: ICourse = {
   images: [],
 };
 
-export default function ProductModal({
+export default function CourseModal({
   open,
   handleClose,
-  productId,
+  courseId,
 }: ICourseModal) {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState<string>(DefaultPhoto.src);
-  const [productSelected, setProductSelected] = useState<ICourse | null>(null)
+  const [courseSelected, setCourseSelected] = useState<ICourse | null>(null)
 
 
   const getProduct = async (id: number) => {
@@ -52,7 +52,7 @@ export default function ProductModal({
     if (response) {
       formik.setValues(response)
       setImageUrl(response.images[0]);
-      setProductSelected(response)
+      setCourseSelected(response)
     }
   }
 
@@ -89,10 +89,10 @@ export default function ProductModal({
   }, [selectedImage]);
 
   useEffect(() => {
-    if (productId) {
-      getProduct(productId)
+    if (courseId) {
+      getProduct(courseId)
     }
-  }, [productId])
+  }, [courseId])
 
   const handlePrice = (event: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = event?.target.value;
@@ -129,7 +129,7 @@ export default function ProductModal({
     formik.setFieldValue('category', categories.map(item => item.value));
   }
 
-  const title = productSelected ? "Editar Curso" : "Criar Curso";
+  const title = courseSelected ? "Editar Curso" : "Criar Curso";
 
   return (
     <Modal

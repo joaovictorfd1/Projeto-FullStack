@@ -25,11 +25,11 @@ import { Copyright } from '../../components/Copyright/Copyright';
 import { getAllCourses, deleteCourse } from '../../api/courses';
 import { ICourse } from '../../interfaces/ICourse';
 import { Button, Pagination, Table, TableBody, TableCell, TableContainer, TableFooter, TableHead, TableRow, TextField } from '@mui/material';
-import { ProductImage } from '../../components/Img/Img';
+import { CourseImage } from '../../components/Img/Img';
 import { useRouter } from 'next/navigation';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import ProductModal from '../../components/Modal/Modal';
+import CourseModal from '../../components/Modal/Modal';
 import { IFilter } from '../../interfaces/IFilter';
 import ConfirmationModal from '../../components/Modal/ConfirmationModal/ConfirmationModal';
 import { options } from '../../utils/mocks/options';
@@ -105,8 +105,8 @@ export default function Dashboard() {
   const [open, setOpen] = useState(true);
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [filter, setFilter] = useState<IFilter>({} as IFilter)
-  const [productSelected, setProductedSelected] = useState<ICourse | null>(null)
-  const [productsObjects, setProductsObjects] = useState<IResponseCourses>({} as IResponseCourses)
+  const [courseSelected, setCoursedSelected] = useState<ICourse | null>(null)
+  const [coursesObjects, setCoursesObjects] = useState<IResponseCourses>({} as IResponseCourses)
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -117,19 +117,19 @@ export default function Dashboard() {
     return router.push('/login')
   };
 
-  const getAllProduct = async (skip: number, filter: IFilter) => {
+  const getAllCourse = async (skip: number, filter: IFilter) => {
     const response = await getAllCourses(skip, filter)
     if (response) {
-      return setProductsObjects(response)
+      return setCoursesObjects(response)
     }
-    return setProductsObjects({} as IResponseCourses)
+    return setCoursesObjects({} as IResponseCourses)
   }
 
-  const handleDeleteProduct = async () => {
+  const handleDeleteCourse = async () => {
     const response = await deleteCourse(id)
     if (response && response.message) {
       Alert('success', response.message)
-      getAllProduct((currentPage - 1) * 15, filter)
+      getAllCourse((currentPage - 1) * 15, filter)
       return setDeleteModalOpen(false)
     }
     Alert('error', response.details)
@@ -143,7 +143,7 @@ export default function Dashboard() {
   };
 
   const numberOfPages = () => {
-    return productsObjects.total / 15;
+    return coursesObjects.total / 15;
   };
 
   const handleFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -156,7 +156,7 @@ export default function Dashboard() {
 
 
   useEffect(() => {
-    getAllProduct((currentPage - 1) * 15, filter)
+    getAllCourse((currentPage - 1) * 15, filter)
   }, [currentPage, filter])
 
   return (
@@ -292,38 +292,38 @@ export default function Dashboard() {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {productsObjects && productsObjects.courses?.map((product) => {
-                      const modifiedCategories = product.category.map((item, index, array) => {
+                    {coursesObjects && coursesObjects.courses?.map((course) => {
+                      const modifiedCategories = course.category.map((item, index, array) => {
                         return index === array.length - 1 ? item : item + ', ';
                       });
                       return (
                         <TableRow
-                          key={product.id}
+                          key={course.id}
                           sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
                           <TableCell>
-                            <ProductImage src={product.images[0]} alt={product.title} />
+                            <CourseImage src={course.images[0]} alt={course.title} />
                           </TableCell>
                           <TableCell component="th" scope="row">
-                            {product.title}
+                            {course.title}
                           </TableCell>
-                          <TableCell align="left">{product.brand}</TableCell>
-                          <TableCell align="left">{product.description}</TableCell>
+                          <TableCell align="left">{course.brand}</TableCell>
+                          <TableCell align="left">{course.description}</TableCell>
                           <TableCell align="left">{modifiedCategories}</TableCell>
-                          <TableCell align="left">{product.price}</TableCell>
-                          <TableCell align="left">{product.discountPercentage}</TableCell>
-                          <TableCell align="left">{product.stock}</TableCell>
+                          <TableCell align="left">{course.price}</TableCell>
+                          <TableCell align="left">{course.discountPercentage}</TableCell>
+                          <TableCell align="left">{course.stock}</TableCell>
                           <TableCell align="left">
                             <Box component={'div'} display={'flex'} gap={'8px'}>
                               <Box component={'div'} display={'flex'} onClick={() => {
                                 setCreateModalOpen(true)
-                                setProductedSelected(product)
+                                setCoursedSelected(course)
                               }}>
                                 <EditIcon sx={{ cursor: 'pointer', color: '#1976d2' }} />
                               </Box>
                               <Box component={'div'} display={'flex'} onClick={() => {
                                 setDeleteModalOpen(true)
-                                setId(product.id)
+                                setId(course.id)
                               }}>
                                 <DeleteIcon sx={{ cursor: 'pointer', color: 'red' }} />
                               </Box>
@@ -346,15 +346,15 @@ export default function Dashboard() {
             )}
           </Box>
         </Box>
-        <ProductModal
+        <CourseModal
           handleClose={() => setCreateModalOpen(false)}
           open={createModalOpen}
-          productId={productSelected?.id}
+          courseId={courseSelected?.id}
         />
         <ConfirmationModal
           open={deleteModalOpen}
           handleClose={() => setDeleteModalOpen(false)}
-          confirmAction={() => handleDeleteProduct()}
+          confirmAction={() => handleDeleteCourse()}
           cancelAction={() => setDeleteModalOpen(false)} />
       </ThemeProvider>
     </AuthGuard>
