@@ -3,9 +3,10 @@ const app = require('../index');
 const axios = require('axios');
 const User = require('../models/user');
 const router = require('../routes/product');
+const ProductModel = require('../models/product');
+const getNextSequence = require('../utils');
 
 app.use('/', router);
-jest.mock('axios');
 
 describe('Testando Rotas de Cadastro de Usuários', () => {
   beforeEach(async () => {
@@ -83,38 +84,95 @@ describe('Testando rotas de login e cadastro' , () => {
   })
 })
 
-describe('Teste da listagem de produtos com a API', () => {
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
+// Teste para GET /products
+describe('Testando rotas de produtos', () => {
 
-  it('deve retornar dados da URL externa sem parâmetros', async () => {
-    axios.get.mockResolvedValue({ data: 'dados simulados' });
-
-    const response = await request(app).get('/products');
-
+  it('deve retornar a lista de produtos', async () => {
+    const response = await request(app).get('/products').query({skip: 0, limit: 15});
     expect(response.status).toBe(200);
-    expect(response.body).toEqual('dados simulados');
-    expect(axios.get).toHaveBeenCalledWith('https://dummyjson.com/products', { params: {} });
+    expect(response.body).toHaveProperty('products');
+    expect(response.body.products).toBeInstanceOf(Array);
   });
 
-  it('deve retornar dados da URL externa com parâmetros', async () => {
-    axios.get.mockResolvedValue({ data: 'dados simulados' });
+  it('deve criar um novo produto', async () => {
+    const newProduct = {
+      title: 'Novo Produto',
+      description: 'Descrição do Novo Produto',
+      price: 19.99,
+      brand: 'Marca Nova',
+      category: ['Categoria Nova'],
+      thumbnail: 'https://example.com/novo-produto-thumbnail.jpg',
+      images: ['https://example.com/novo-produto-imagem1.jpg'],
+      rating: 0,
+      discountPercentage: 10,
+      stock: 1,
+    };
 
-    const response = await request(app).get('/products').query({ q: 'searchTerm' });
-
+    const response = await request(app).post('/products').send(newProduct);
     expect(response.status).toBe(200);
-    expect(response.body).toEqual('dados simulados');
-    expect(axios.get).toHaveBeenCalledWith('https://dummyjson.com/products/search', { params: { q: 'searchTerm' } });
+    expect(response.body).toHaveProperty('id');
   });
 
-  it('deve lidar com erros ao chamar a URL externa', async () => {
-    axios.get.mockRejectedValue(new Error('Erro simulado'));
+  it('deve atualizar um produto existente', async () => {
+    const productId = await getNextSequence('productId');
+    // Primeiro, crie um produto para ser atualizado
+    const newProduct = new ProductModel({
+      id: productId,
+      title: 'Novo Produto',
+      description: 'Descrição do Novo Produto',
+      price: 19.99,
+      brand: 'Marca Nova',
+      category: ['Categoria Nova'],
+      thumbnail: 'https://example.com/novo-produto-thumbnail.jpg',
+      images: ['https://example.com/novo-produto-imagem1.jpg'],
+      rating: 0,
+      discountPercentage: 10,
+      stock: 1,
+    });
+    await newProduct.save();
 
-    const response = await request(app).get('/products');
+    // Em seguida, atualize o produto
+    const updatedProduct = {
+      title: 'Produto Atualizado',
+      description: 'Descrição do Produto Atualizado',
+      price: 300.00,
+      brand: 'Marca Atualizada',
+      category: ['Categoria Nova', 'Categoria atualizada'],
+      thumbnail: 'https://example.com/novo-produto-thumbnail.jpg',
+      images: ['https://example.com/novo-produto-imagem1.jpg'],
+      rating: 0,
+      discountPercentage: 10,
+      stock: 1,
+    };
 
-    expect(response.status).toBe(500);
-    expect(response.body).toEqual({ error: 'Erro interno do servidor' });
-    expect(axios.get).toHaveBeenCalledWith('https://dummyjson.com/products', { params: {} });
+    const response = await request(app).put(`/products/${newProduct.id}`).send(updatedProduct);
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('id', newProduct.id);
+    expect(response.body.title).toBe(updatedProduct.title);
+    expect(response.body.price).toBe(updatedProduct.price);
+  });
+
+  it('deve excluir um produto existente', async () => {
+    const productId = await getNextSequence('productId');
+    // Primeiro, crie um produto para ser excluído
+    const newProduct = new ProductModel({
+      id: productId,
+      title: 'Produto a ser Excluído',
+      description: 'Descrição do Produto a ser Excluído',
+      price: 49.99,
+      brand: 'Marca a ser Excluída',
+      category: ['Categoria a ser Excluída'],
+      thumbnail: 'https://example.com/produto-a-ser-excluido-thumbnail.jpg',
+      images: ['https://example.com/produto-a-ser-excluido-imagem1.jpg'],
+      rating: 0,
+      discountPercentage: 10,
+      stock: 1,
+    });
+    await newProduct.save();
+
+    // Em seguida, exclua o produto
+    const response = await request(app).delete(`/products/${newProduct.id}`);
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('message', 'Produto excluído com sucesso');
   });
 });
