@@ -51,7 +51,11 @@ export default function CourseModal({
   const getProduct = async (id: number) => {
     const response = await getCourseById(id)
     if (response) {
-      formik.setValues(response)
+      console.log(response.category)
+      formik.setValues({
+        ...response,
+        category: response.category.map(item => item)
+      })
       setImageUrl(response.images[0]);
       setCourseSelected(response)
     }
@@ -101,11 +105,6 @@ export default function CourseModal({
     if (Number.isNaN(numeric)) {
       return;
     }
-    const formattedValue = numeric.toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    });
-
     formik.setFieldValue("price", numeric.toFixed(2).toString());
   };
 

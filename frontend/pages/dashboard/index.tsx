@@ -34,6 +34,7 @@ import { IFilter } from '../../interfaces/IFilter';
 import ConfirmationModal from '../../components/Modal/ConfirmationModal/ConfirmationModal';
 import { options } from '../../utils/mocks/options';
 import { Alert } from '../../components/Alert/Alert';
+import { categories } from '../../utils/mocks/category';
 
 const drawerWidth: number = 240;
 
@@ -293,6 +294,10 @@ export default function Dashboard() {
                   <TableBody>
                     {coursesObjects && coursesObjects.courses?.map((course) => {
                       const modifiedCategories = course.category.map((item, index, array) => {
+                        const categoryName = categories.find(category => category.value === item)?.label
+                        if (categoryName) {
+                          return index === array.length - 1 ? categoryName : categoryName + ', ';
+                        }
                         return index === array.length - 1 ? item : item + ', ';
                       });
                       return (
