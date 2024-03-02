@@ -34,6 +34,7 @@ import { IFilter } from '../../interfaces/IFilter';
 import ConfirmationModal from '../../components/Modal/ConfirmationModal/ConfirmationModal';
 import { options } from '../../utils/mocks/options';
 import { Alert } from '../../components/Alert/Alert';
+import { Search } from '@mui/icons-material';
 
 const drawerWidth: number = 240;
 
@@ -249,7 +250,6 @@ export default function Dashboard() {
                       type="text"
                       label="Ordernar por:"
                       size="small"
-                      helperText="Selecione o tipo de ordenação"
                       SelectProps={{
                         native: true,
                       }}
@@ -311,7 +311,7 @@ export default function Dashboard() {
                           <TableCell align="left">{course.description}</TableCell>
                           <TableCell align="left">{modifiedCategories}</TableCell>
                           <TableCell align="left">{course.price}</TableCell>
-                          <TableCell align="left">{course.discountPercentage}</TableCell>
+                          <TableCell align="left">{course.discountPercentage > 0 ? `${course.discountPercentage}%` : ''}</TableCell>
                           <TableCell align="left">{course.stock}</TableCell>
                           <TableCell align="left">
                             <Box component={'div'} display={'flex'} gap={'8px'}>

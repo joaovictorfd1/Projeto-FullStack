@@ -15,7 +15,7 @@ import ImageInput from "../ImageInput/ImageInput";
 import DefaultPhoto from "../../assets/img/default_photo.png"
 import { categories } from "../../utils/mocks/category";
 import { ICategories } from "../../interfaces/ICategories";
-import { createCourse, editCourse, deleteCourse, getCourseById } from "../../api/courses";
+import { createCourse, editCourse, getCourseById } from "../../api/courses";
 import { Alert } from "../Alert/Alert";
 
 interface ICourseModal {
@@ -25,6 +25,7 @@ interface ICourseModal {
 }
 
 const initialValues: ICourse = {
+  id: 0,
   title: "",
   description: "",
   price: 0,
