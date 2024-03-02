@@ -294,10 +294,6 @@ export default function Dashboard() {
                   <TableBody>
                     {coursesObjects && coursesObjects.courses?.map((course) => {
                       const modifiedCategories = course.category.map((item, index, array) => {
-                        const categoryName = categories.find(category => category.value === item)?.label
-                        if (categoryName) {
-                          return index === array.length - 1 ? categoryName : categoryName + ', ';
-                        }
                         return index === array.length - 1 ? item : item + ', ';
                       });
                       return (

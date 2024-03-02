@@ -34,7 +34,10 @@ export const getCourseById = async (id: number) => {
 
 export const createCourse = async (body: ICourse) => {
   try {
-    const response: AxiosResponse<ICourse> = await api.post(path, body)
+    const response: AxiosResponse<ICourse> = await api.post(path, {
+      ...body,
+      category: body.category.map(item => item.value)
+    })
     return response.data
   } catch (error) {
     return error
@@ -43,7 +46,10 @@ export const createCourse = async (body: ICourse) => {
 
 export const editCourse = async (body: ICourse) => {
   try {
-    const response: AxiosResponse<ICourse> = await api.put(`${path}/${body.id}`, body)
+    const response: AxiosResponse<ICourse> = await api.put(`${path}/${body.id}`, {
+      ...body,
+      category: body.category.map(item => item.value)
+    })
     return response.data
   } catch (error) {
     return error

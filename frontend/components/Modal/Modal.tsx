@@ -25,7 +25,6 @@ interface ICourseModal {
 }
 
 const initialValues: ICourse = {
-  id: 0,
   title: "",
   description: "",
   price: 0,
@@ -37,6 +36,8 @@ const initialValues: ICourse = {
   thumbnail: "",
   images: [],
 };
+
+
 
 export default function CourseModal({
   open,
@@ -50,11 +51,14 @@ export default function CourseModal({
 
   const getProduct = async (id: number) => {
     const response = await getCourseById(id)
+    console.log(response.category)
     if (response) {
-      console.log(response.category)
       formik.setValues({
         ...response,
-        category: response.category.map(item => item)
+        category: response.category.map((item) => ({
+          value: item,
+          label: item,
+        }))
       })
       setImageUrl(response.images[0]);
       setCourseSelected(response)
@@ -126,7 +130,7 @@ export default function CourseModal({
   };
 
   const handleCategoriesChange = (categories: Array<ICategories>) => {
-    formik.setFieldValue('category', categories.map(item => item.value));
+    formik.setFieldValue('category', categories);
   }
 
   const title = courseSelected ? "Editar Curso" : "Criar Curso";
@@ -183,7 +187,7 @@ export default function CourseModal({
               <Grid item xs={12}>
                 <Autocomplete
                   multiple
-                  id="categories"
+                  id="category"
                   options={categories}
                   getOptionLabel={(option) => option.label}
                   filterSelectedOptions
@@ -194,6 +198,7 @@ export default function CourseModal({
                       placeholder="Categorias"
                     />
                   )}
+                  value={formik.values.category}
                   onChange={(_, value) => handleCategoriesChange(value)}
                 />
               </Grid>

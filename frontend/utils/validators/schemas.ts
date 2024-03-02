@@ -18,7 +18,12 @@ export const ProductSchema = Yup.object().shape({
   rating: Yup.number().min(0, 'A classificação não pode ser negativa'),
   stock: Yup.number().integer().min(0, 'O estoque não pode ser negativo').required('O estoque é obrigatório'),
   brand: Yup.string(),
-  category: Yup.array().of(Yup.string()),
+  category: Yup.array().of(
+    Yup.object().shape({
+      label: Yup.string(),
+      value: Yup.string(),
+    }).required()
+  ),
   thumbnail: Yup.string().url('A thumbnail deve ser uma URL válida').nullable(),
   images: Yup.array().of(Yup.string()),
 });

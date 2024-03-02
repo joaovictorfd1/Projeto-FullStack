@@ -1,5 +1,10 @@
+interface Option {
+  value: string;
+  label: string;
+}
+
 export interface ICourse {
-  id: number
+  id?: number
   title: string
   description: string
   price: number
@@ -7,7 +12,7 @@ export interface ICourse {
   rating: number
   stock: number
   brand: string
-  category: string[]
+  category: Option[]
   thumbnail?: string
   images: string[]
 }
