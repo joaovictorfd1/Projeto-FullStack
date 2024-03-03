@@ -14,7 +14,8 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // Conexão com o banco
-mongoose.connect('mongodb://localhost:27017/beta-desafio', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb://mongodb:27017/beta-desafio', { useNewUrlParser: true, useUnifiedTopology: true }); // Rodar no docker
+// mongoose.connect('mongodb://localhost:27017/beta-desafio', { useNewUrlParser: true, useUnifiedTopology: true }); // Rodar na maquina
 
 app.use(authRouter)
 
