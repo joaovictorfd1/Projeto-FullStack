@@ -12,6 +12,7 @@ export default function ImageInput({ onChange }: IImageInput) {
     // eslint-disable-next-line jsx-a11y/label-has-associated-control
     <label htmlFor="select_image">
       <Input
+        data-testid="image"
         type="file"
         accept="image/"
         id="select_image"

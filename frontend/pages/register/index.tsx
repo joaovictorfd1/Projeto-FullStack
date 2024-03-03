@@ -29,8 +29,6 @@ const initialValues: IRegister = {
 
 export default function SignUp() {
   const router = useRouter()
-
-
   const onSubmit = async (body: IRegister) => {
     const response = await register(body)
     if (response && !response?.response?.data) {
@@ -67,41 +65,14 @@ export default function SignUp() {
           </Typography>
           <Box component="form" onSubmit={formik.handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-              {/* <Grid item xs={12} sm={6}>
-                <TextField
-                  autoComplete="given-name"
-                  name="firstName"
-                  required
-                  fullWidth
-                  id="firstName"
-                  label="Nome"
-                  autoFocus
-                  value={formik.values.firstName}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={Boolean(formik.errors.firstName)}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Sobrenome"
-                  name="lastName"
-                  autoComplete="family-name"
-                  value={formik.values.lastName}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={Boolean(formik.errors.lastName)}
-                />
-              </Grid> */}
               <Grid item xs={12}>
                 <TextField
                   required
                   fullWidth
+                  data-testid="email"
                   id="email"
                   label="Email"
+                  placeholder='Email'
                   name="email"
                   autoComplete="email"
                   value={formik.values.email}
@@ -116,6 +87,7 @@ export default function SignUp() {
                   fullWidth
                   name="password"
                   label="Senha"
+                  placeholder='Senha'
                   type="password"
                   id="password"
                   autoComplete="new-password"
@@ -127,6 +99,7 @@ export default function SignUp() {
               </Grid>
             </Grid>
             <Button
+              data-testid="registerButton"
               type="submit"
               fullWidth
               variant="contained"

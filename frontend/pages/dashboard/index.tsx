@@ -75,6 +75,13 @@ export default function ListCourses() {
     getAllCourse((currentPage - 1) * 15, filter)
   }, [currentPage, filter])
 
+  useEffect(() => {
+    if (!localStorage.getItem('token')) {
+      router.push('/login')
+      return;
+    }
+  }, [])
+
   return (
     <Nav>
       <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
@@ -82,6 +89,7 @@ export default function ListCourses() {
           <Grid item xs={6}>
             <Box component={'div'} display={'flex'} gap={'16px'}>
               <TextField
+                data-testid="search"
                 type="text"
                 value={filter.search}
                 onChange={handleFilter}
@@ -90,6 +98,7 @@ export default function ListCourses() {
               />
 
               <TextField
+                data-testid="order"
                 select
                 type="text"
                 label="Ordernar por:"
@@ -114,6 +123,7 @@ export default function ListCourses() {
           <Grid item xs={6}>
             <Box component={'div'} display={'flex'} justifyContent={'flex-end'}>
               <Button
+                data-testid="new"
                 type='button'
                 variant="contained"
                 onClick={() => setCreateModalOpen(true)}
@@ -124,7 +134,7 @@ export default function ListCourses() {
           </Grid>
         </Grid>
         <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <Table sx={{ minWidth: 650 }} aria-label="simple table" data-testid="table">
             <TableHead>
               <TableRow>
                 <TableCell align='left' />

@@ -55,7 +55,7 @@ export default function CourseModal({
       const response = await createCourse(values)
       if (response) {
         Alert('success', 'Curso criado com sucesso')
-        getAllCourse(0, {search: '', sort: ''})
+        getAllCourse(0, { search: '', sort: '' })
         handleClose();
       }
     } catch (error) {
@@ -140,6 +140,7 @@ export default function CourseModal({
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Input
+                  placeholder="Titulo"
                   id="title"
                   label="Titulo"
                   variant="outlined"
@@ -153,6 +154,7 @@ export default function CourseModal({
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Input
+                  placeholder="Marca"
                   id="brand"
                   name="brand"
                   label="Marca"
@@ -166,6 +168,7 @@ export default function CourseModal({
               </Grid>
               <Grid item xs={12}>
                 <Autocomplete
+                  data-testid="category"
                   multiple
                   id="category"
                   options={categories}
@@ -184,6 +187,7 @@ export default function CourseModal({
               </Grid>
               <Grid item xs={12}>
                 <Input
+                  placeholder="Descrição"
                   id="description"
                   name="description"
                   label="Descrição"
@@ -198,6 +202,7 @@ export default function CourseModal({
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Input
+                  placeholder="Preço"
                   id="price"
                   name="price"
                   label="Preço"
@@ -213,6 +218,7 @@ export default function CourseModal({
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Input
+                  placeholder="Desconto"
                   id="discountPercentage"
                   name="discountPercentage"
                   label="Desconto (em %)"
@@ -228,6 +234,7 @@ export default function CourseModal({
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Input
+                  placeholder="Avaliação"
                   id="rating"
                   name="rating"
                   label="Avaliação (de 0 a 10)"
@@ -248,6 +255,7 @@ export default function CourseModal({
               </Grid>
               <Grid item xs={12} sm={6}>
                 <Input
+                  placeholder="Estoque"
                   id="stock"
                   name="stock"
                   label="Estoque"
@@ -264,6 +272,7 @@ export default function CourseModal({
               </Grid>
               <Grid item xs={6} display="flex" justifyContent="center">
                 <Button
+                  data-testid="createButton"
                   variant="contained"
                   sx={{ width: `200px` }}
                   onClick={() => formik.handleSubmit()}
@@ -274,6 +283,7 @@ export default function CourseModal({
               </Grid>
               <Grid item xs={6} display="flex" justifyContent="center">
                 <Button
+                  data-testid="cancelButton"
                   variant="contained"
                   sx={{ width: `200px` }}
                   onClick={() => handleClose()}
