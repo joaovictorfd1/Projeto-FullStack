@@ -144,6 +144,7 @@ export default function CourseModal() {
                   value={formik.values.title}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
+                  error={Boolean(formik.errors.title)}
                   name="title"
                 />
               </Grid>
@@ -157,6 +158,7 @@ export default function CourseModal() {
                   value={formik.values.brand}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
+                  error={Boolean(formik.errors.brand)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -187,6 +189,7 @@ export default function CourseModal() {
                   value={formik.values.description}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
+                  error={Boolean(formik.errors.description)}
                   multiline
                 />
               </Grid>
@@ -194,7 +197,7 @@ export default function CourseModal() {
                 <Input
                   id="price"
                   name="price"
-                  label="Preço"
+                  label="Preço (em R$)"
                   variant="outlined"
                   type="text"
                   onBlur={formik.handleBlur}
@@ -202,6 +205,7 @@ export default function CourseModal() {
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     handlePrice(e)
                   }
+                  error={Boolean(formik.errors.price)}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -216,6 +220,7 @@ export default function CourseModal() {
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     handleDiscountChange(e)
                   }
+                  error={Boolean(formik.errors.discountPercentage)}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -235,6 +240,7 @@ export default function CourseModal() {
                   inputProps={{
                     min: 0, max: 10,
                   }}
+                  error={Boolean(formik.errors.rating)}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -250,6 +256,7 @@ export default function CourseModal() {
                   inputProps={{
                     min: 0,
                   }}
+                  error={Boolean(formik.errors.stock)}
                 />
               </Grid>
               <Grid item xs={6} display="flex" justifyContent="center">

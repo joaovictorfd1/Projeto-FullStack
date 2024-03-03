@@ -148,6 +148,7 @@ export default function CourseModal({
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   name="title"
+                  error={Boolean(formik.errors.title)}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -160,6 +161,7 @@ export default function CourseModal({
                   value={formik.values.brand}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
+                  error={Boolean(formik.errors.brand)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -191,6 +193,7 @@ export default function CourseModal({
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   multiline
+                  error={Boolean(formik.errors.description)}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -205,6 +208,7 @@ export default function CourseModal({
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     handlePrice(e)
                   }
+                  error={Boolean(formik.errors.price)}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -219,6 +223,7 @@ export default function CourseModal({
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                     handleDiscountChange(e)
                   }
+                  error={Boolean(formik.errors.discountPercentage)}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -238,6 +243,7 @@ export default function CourseModal({
                   inputProps={{
                     min: 0, max: 10,
                   }}
+                  error={Boolean(formik.errors.rating)}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -253,6 +259,7 @@ export default function CourseModal({
                   inputProps={{
                     min: 0,
                   }}
+                  error={Boolean(formik.errors.stock)}
                 />
               </Grid>
               <Grid item xs={6} display="flex" justifyContent="center">
