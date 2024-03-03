@@ -1,3 +1,4 @@
+'use client'
 import React, { useEffect, useState } from "react";
 import { Autocomplete, Button, Grid, Stack, TextField } from "@mui/material";
 import { ICourse } from "../../interfaces/ICourse";
@@ -18,8 +19,8 @@ import { ICategories } from "../../interfaces/ICategories";
 import { editCourse, getCourseById } from "../../api/courses";
 import { Alert } from "../../components/Alert/Alert";
 import Nav from "../../components/Nav/Nav";
-import { useParams } from "next/navigation";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+
 
 
 const initialValues: ICourse = {

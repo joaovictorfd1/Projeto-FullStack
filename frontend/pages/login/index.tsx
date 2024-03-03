@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -17,7 +17,6 @@ import { login } from '../../api/login';
 import { Alert } from '../../components/Alert/Alert';
 import { Copyright } from '../../components/Copyright/Copyright';
 import { useRouter } from 'next/navigation';
-import AuthGuard from '../../components/Auth/AuthGuard';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -46,74 +45,81 @@ export default function SignIn() {
     enableReinitialize: true,
   });
 
+  useEffect(() => {
+    if (localStorage && localStorage.getItem('token')) {
+      return router.push('/dashboard')
+    }
+  }, [])
+
   return (
-    <AuthGuard>
-      <ThemeProvider theme={defaultTheme}>
-        <Container component="main" maxWidth="xs">
-          <CssBaseline />
-          <Box
-            sx={{
-              marginTop: 8,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
-            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-              <LockOutlinedIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5">
-              Entrar
-            </Typography>
-            <Box component="form" onSubmit={formik.handleSubmit} sx={{ mt: 1 }}>
-              <TextField
-                id="email"
-                label="Email"
-                name="email"
-                margin="normal"
-                autoFocus
-                value={formik.values.email}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={Boolean(formik.errors.email)}
-                required
-                fullWidth
-              />
-              <TextField
-                type='password'
-                id="password"
-                label="Senha"
-                name="password"
-                margin="normal"
-                autoFocus
-                value={formik.values.password}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={Boolean(formik.errors.password)}
-                required
-                fullWidth
-              />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-                disabled={!formik.isValid || !formik.dirty}
-              >
-                Login
-              </Button>
-              <Grid container sx={{ justifyContent: 'center' }}>
-                <Grid item>
-                  <Link href="/register" variant="body2">
-                    {"Não tem uma conta? Cadastre-se"}
-                  </Link>
-                </Grid>
+    <ThemeProvider theme={defaultTheme}>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Box
+          sx={{
+            marginTop: 8,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Entrar
+          </Typography>
+          <Box component="form" onSubmit={formik.handleSubmit} sx={{ mt: 1 }}>
+            <TextField
+              id="email"
+              label="Email"
+              name="email"
+              margin="normal"
+              placeholder='Email'
+              autoFocus
+              value={formik.values.email}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={Boolean(formik.errors.email)}
+              required
+              fullWidth
+            />
+            <TextField
+              type='password'
+              id="password"
+              label="Senha"
+              name="password"
+              margin="normal"
+              placeholder='Senha'
+              autoFocus
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={Boolean(formik.errors.password)}
+              required
+              fullWidth
+            />
+            <Button
+              data-testid="loginButton"
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+              disabled={!formik.isValid || !formik.dirty}
+            >
+              Login
+            </Button>
+            <Grid container sx={{ justifyContent: 'center' }}>
+              <Grid item>
+                <Link href="/register" variant="body2">
+                  {"Não tem uma conta? Cadastre-se"}
+                </Link>
               </Grid>
-            </Box>
+            </Grid>
           </Box>
-          <Copyright sx={{ mt: 8, mb: 4 }} />
-        </Container>
-      </ThemeProvider>
-    </AuthGuard>
+        </Box>
+        <Copyright sx={{ mt: 8, mb: 4 }} />
+      </Container>
+    </ThemeProvider>
   );
 }
