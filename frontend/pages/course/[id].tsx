@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Autocomplete, Backdrop, Button, Grid, Modal, Stack, TextField } from "@mui/material";
+import { Autocomplete, Button, Grid, Stack, TextField } from "@mui/material";
 import { ICourse } from "../../interfaces/ICourse";
 import { useFormik } from "formik";
 import { ProductSchema } from "../../utils/validators/schemas";
@@ -10,21 +10,17 @@ import {
   ModalContent,
   ModalTitle,
   PreviewImage,
-} from "./styles";
-import ImageInput from "../ImageInput/ImageInput";
+} from "../../components/Modal/styles";
+import ImageInput from "../../components/ImageInput/ImageInput";
 import DefaultPhoto from "../../assets/img/default_photo.png"
 import { categories } from "../../utils/mocks/category";
 import { ICategories } from "../../interfaces/ICategories";
-import { createCourse, getCourseById } from "../../api/courses";
-import { Alert } from "../Alert/Alert";
-import { IFilter } from "../../interfaces/IFilter";
+import { editCourse, getCourseById } from "../../api/courses";
+import { Alert } from "../../components/Alert/Alert";
+import Nav from "../../components/Nav/Nav";
 import { useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
-interface ICourseModal {
-  open: boolean;
-  handleClose: () => void;
-  getAllCourse: (skip: number, filter: IFilter) => Promise<void>
-}
 
 const initialValues: ICourse = {
   title: "",
@@ -39,28 +35,35 @@ const initialValues: ICourse = {
   images: [],
 };
 
-
-
-export default function CourseModal({
-  open,
-  handleClose,
-  getAllCourse,
-}: ICourseModal) {
+export default function CourseModal() {
+  const router = useRouter()
   const params = useParams()
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState<string>(DefaultPhoto.src);
 
+  const getProduct = async (id: number) => {
+    const response = await getCourseById(id)
+    if (response) {
+      formik.setValues({
+        ...response,
+        category: response.category.map((item) => ({
+          value: item,
+          label: item,
+        }))
+      })
+      setImageUrl(response.images[0]);
+    }
+  }
+
   const onSubmit = async (values: ICourse) => {
     try {
-      const response = await createCourse(values)
+      const response = await editCourse(values)
       if (response) {
-        Alert('success', 'Curso criado com sucesso')
-        getAllCourse(0, {search: '', sort: ''})
-        handleClose();
+        Alert('success', 'Curso editado com sucesso')
+        return router.push('/dashboard')
       }
     } catch (error) {
-      Alert('error', error.details || 'Não foi possível criar o curso desejado')
-      handleClose();
+      Alert('error', error.details || 'Não foi possível editar o curso desejado')
     }
   };
 
@@ -82,6 +85,10 @@ export default function CourseModal({
       });
     }
   }, [selectedImage]);
+
+  useEffect(() => {
+    if (params && params.id) getProduct(Number(params.id))
+  }, [params])
 
   const handlePrice = (event: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = event?.target.value;
@@ -114,21 +121,11 @@ export default function CourseModal({
   }
 
   return (
-    <Modal
-      open={open}
-      onClose={() => handleClose()}
-      closeAfterTransition
-      slots={{ backdrop: Backdrop }}
-      slotProps={{
-        backdrop: {
-          timeout: 500,
-        },
-      }}
-    >
+    <Nav>
       <ModalContainer>
         <ModalContent>
           <Stack>
-            <ModalTitle>Criar Curso</ModalTitle>
+            <ModalTitle>Editar curso</ModalTitle>
             <FormContainer container spacing={2}>
               {imageUrl && (
                 <Grid item xs={12} display="flex" justifyContent="center">
@@ -269,7 +266,9 @@ export default function CourseModal({
                 <Button
                   variant="contained"
                   sx={{ width: `200px` }}
-                  onClick={() => handleClose()}
+                  onClick={() => {
+                    router.push('/dashboard')
+                  }}
                   color="error"
                 >
                   Cancelar
@@ -279,6 +278,6 @@ export default function CourseModal({
           </Stack>
         </ModalContent>
       </ModalContainer>
-    </Modal>
+    </Nav>
   );
 }

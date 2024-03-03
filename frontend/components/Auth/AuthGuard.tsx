@@ -13,9 +13,10 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
     if (!localStorage.getItem('token')) {
       // Se o usuário não estiver autenticado, redirecione para a página de login
       router.push('/login');
-    } else {
-      router.push('/dashboard');
+      return;
     }
+    router.push('/dashboard');
+    return;
   }, []);
 
   // Renderize o conteúdo da rota protegida se o usuário estiver autenticado
