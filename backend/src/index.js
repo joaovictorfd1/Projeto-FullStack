@@ -14,8 +14,9 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // Conexão com o banco
-mongoose.connect('mongodb://mongodb:27017/beta-desafio', { useNewUrlParser: true, useUnifiedTopology: true }); // Rodar no docker
+// mongoose.connect('mongodb://mongodb:27017/beta-desafio', { useNewUrlParser: true, useUnifiedTopology: true }); // Rodar no docker
 // mongoose.connect('mongodb://localhost:27017/beta-desafio', { useNewUrlParser: true, useUnifiedTopology: true }); // Rodar na maquina
+mongoose.connect('mongodb+srv://joaovictorfd:Chapa317036@beta-clouster.7bpqnsu.mongodb.net/?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true })
 
 app.use(authRouter)
 
