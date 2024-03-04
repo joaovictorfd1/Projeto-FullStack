@@ -22,6 +22,7 @@ As Tecnologias utilizadas foram:
 - Express
 - Mongodb
 - Docker
+- Vercel e Heroku (Deploy)
 
 ## 📁 Project access
 
