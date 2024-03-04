@@ -1,22 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
-import Paper from '@mui/material/Paper';
 import { Copyright } from '../../components/Copyright/Copyright';
 import { getAllCourses, deleteCourse } from '../../api/courses';
 import { ICourse } from '../../interfaces/ICourse';
-import { Button, Grid, Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from '@mui/material';
-import { CourseImage } from '../../components/Img/Img';
+import { Button, CircularProgress, Grid, Pagination, TextField } from '@mui/material';
 import { useRouter } from 'next/navigation';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import CourseModal from '../../components/Modal/Modal';
 import { IFilter } from '../../interfaces/IFilter';
 import ConfirmationModal from '../../components/Modal/ConfirmationModal/ConfirmationModal';
 import { options } from '../../utils/mocks/options';
 import { Alert } from '../../components/Alert/Alert';
 import Nav from '../../components/Nav/Nav';
-import { formatCurrency, formatPercent } from '../../utils/formaters/formaters';
+import CourseCard from '../../components/Card';
 
 interface IResponseCourses {
   total: number
@@ -134,64 +130,15 @@ export default function ListCourses() {
             </Box>
           </Grid>
         </Grid>
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table" data-testid="table">
-            <TableHead>
-              <TableRow>
-                <TableCell align='left' />
-                <TableCell align='left'>Nome</TableCell>
-                <TableCell align='left'>Marca</TableCell>
-                <TableCell align="left">Descrição</TableCell>
-                <TableCell align="left">Categoria</TableCell>
-                <TableCell align="left">Preço</TableCell>
-                <TableCell align="left">Desconto (%)</TableCell>
-                <TableCell align="left">Estoque</TableCell>
-                <TableCell />
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {coursesObjects && coursesObjects.courses?.map((course) => {
-                const modifiedCategories = course.category.map((item, index, array) => {
-                  return index === array.length - 1 ? item : item + ', ';
-                });
-                return (
-                  <TableRow
-                    key={course.id}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                  >
-                    <TableCell>
-                      <CourseImage src={course.images[0]} alt={course.title} />
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      {course.title}
-                    </TableCell>
-                    <TableCell align="left">{course.brand}</TableCell>
-                    <TableCell align="left">{course.description}</TableCell>
-                    <TableCell align="left">{modifiedCategories}</TableCell>
-                    <TableCell align="left">{formatCurrency(course.price)}</TableCell>
-                    <TableCell align="left">{formatPercent(course.discountPercentage)}</TableCell>
-                    <TableCell align="left">{course.stock}</TableCell>
-                    <TableCell align="left">
-                      <Box component={'div'} display={'flex'} gap={'8px'}>
-                        <Box component={'div'} display={'flex'} onClick={() => {
-                          router.push(`/course/${course.id}`)
-                        }}>
-                          <EditIcon sx={{ cursor: 'pointer', color: '#1976d2' }} />
-                        </Box>
-                        <Box component={'div'} display={'flex'} onClick={() => {
-                          setDeleteModalOpen(true)
-                          setId(course.id)
-                        }}>
-                          <DeleteIcon sx={{ cursor: 'pointer', color: 'red' }} />
-                        </Box>
-                      </Box>
-                    </TableCell>
-                  </TableRow>
-                )
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        {coursesObjects && coursesObjects.courses?.length === 0 ? (
+          <Box sx={{ display: 'flex', width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <Grid container rowGap='24px' columnGap='12px' paddingBottom='48px' paddingTop='112px' justifyContent='center'>
+            {coursesObjects && coursesObjects.courses?.map((course: ICourse) => <CourseCard key={course.id} course={course} setId={setId} setDeleteModalOpen={setDeleteModalOpen} />)}
+          </Grid>
+        )}
         <Copyright sx={{ pt: 4 }} />
       </Container>
       {Math.floor(numberOfPages()) > 0 && (
