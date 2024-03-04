@@ -36,7 +36,7 @@ $ cd beta-project-teste
 ### 2. Inicializar o docker
 
 ```sh
-$ docker-compose up
+$ docker-compose up --build
 
 ```
 
