@@ -16,6 +16,7 @@ import ConfirmationModal from '../../components/Modal/ConfirmationModal/Confirma
 import { options } from '../../utils/mocks/options';
 import { Alert } from '../../components/Alert/Alert';
 import Nav from '../../components/Nav/Nav';
+import { formatCurrency, formatPercent } from '../../utils/formaters/formaters';
 
 interface IResponseCourses {
   total: number
@@ -167,8 +168,8 @@ export default function ListCourses() {
                     <TableCell align="left">{course.brand}</TableCell>
                     <TableCell align="left">{course.description}</TableCell>
                     <TableCell align="left">{modifiedCategories}</TableCell>
-                    <TableCell align="left">{`R$ ${course.price}`}</TableCell>
-                    <TableCell align="left">{course.discountPercentage > 0 ? `${course.discountPercentage}%` : ''}</TableCell>
+                    <TableCell align="left">{formatCurrency(course.price)}</TableCell>
+                    <TableCell align="left">{formatPercent(course.discountPercentage)}</TableCell>
                     <TableCell align="left">{course.stock}</TableCell>
                     <TableCell align="left">
                       <Box component={'div'} display={'flex'} gap={'8px'}>
