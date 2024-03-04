@@ -5,7 +5,7 @@ const path = "/auth/me"
 
 export const authMe = async (token: string) => {
   try {
-    const response: AxiosResponse<string> = await api.post(path, {
+    const response: AxiosResponse<string> = await api.get(path, {
       headers: {
         Authorization: `Bearer ${token}`,
       }

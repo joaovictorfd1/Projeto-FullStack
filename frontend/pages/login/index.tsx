@@ -32,8 +32,8 @@ export default function SignIn() {
   const onSubmit = async (body: ILogin) => {
     const user = await login(body);
     if (user && !user?.response?.data) {
-      const autorization = authMe(user.token)
-      if (autorization) {
+      const autorization = await authMe(user.token)
+      if (autorization.userId) {
         localStorage.setItem('token', user.token)
         Alert('success', 'Login efetuado com sucesso')
         router.push('/dashboard')
