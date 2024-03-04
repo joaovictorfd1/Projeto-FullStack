@@ -16,6 +16,5 @@ export const MenuButton = styled(BaseMenuButton)(
   background: none;
   border: none;
   color: ${theme.palette.mode === 'dark' ? grey[200] : grey[900]};
-  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   `,
 );  

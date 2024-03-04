@@ -1,13 +1,11 @@
 'use client'
 import * as React from 'react';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -17,7 +15,9 @@ import { IRegister } from '../../interfaces/IRegister';
 import { SingUpSchema } from '../../utils/validators/schemas';
 import { register } from '../../api/register';
 import { Alert } from '../../components/Alert/Alert';
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation';
+import Logo from '../../assets/img/logo_beta.png'
+import Image from 'next/image';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -57,9 +57,7 @@ export default function SignUp() {
             alignItems: 'center',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
+          <Image src={Logo} width={50} height={50} alt='logo' style={{ margin: '0 0 10px 0'}} />
           <Typography component="h1" variant="h5">
             Registre-se
           </Typography>

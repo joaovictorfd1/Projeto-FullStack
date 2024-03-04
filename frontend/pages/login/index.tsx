@@ -6,7 +6,6 @@ import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useFormik } from 'formik';
@@ -18,6 +17,8 @@ import { Alert } from '../../components/Alert/Alert';
 import { Copyright } from '../../components/Copyright/Copyright';
 import { useRouter } from 'next/navigation';
 import { authMe } from '../../api/auth';
+import Logo from '../../assets/img/logo_beta.png'
+import Image from 'next/image';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -68,11 +69,9 @@ export default function SignIn() {
             alignItems: 'center',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
+          <Image src={Logo} width={50} height={50} alt='logo' style={{ margin: '0 0 10px 0'}} />
           <Typography component="h1" variant="h5">
-            Entrar
+            Acessar
           </Typography>
           <Box component="form" onSubmit={formik.handleSubmit} sx={{ mt: 1 }}>
             <TextField
