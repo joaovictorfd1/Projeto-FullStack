@@ -17,6 +17,7 @@ import { login } from '../../api/login';
 import { Alert } from '../../components/Alert/Alert';
 import { Copyright } from '../../components/Copyright/Copyright';
 import { useRouter } from 'next/navigation';
+import { authMe } from '../../api/auth';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -31,9 +32,13 @@ export default function SignIn() {
   const onSubmit = async (body: ILogin) => {
     const user = await login(body);
     if (user && !user?.response?.data) {
-      localStorage.setItem('token', user.token)
-      Alert('success', 'Login efetuado com sucesso')
-      router.push('/dashboard')
+      const autorization = authMe(user.token)
+      if (autorization) {
+        localStorage.setItem('token', user.token)
+        Alert('success', 'Login efetuado com sucesso')
+        router.push('/dashboard')
+        return;
+      }
     }
     return Alert('error', user?.response?.data.error)
   };

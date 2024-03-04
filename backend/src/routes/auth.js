@@ -2,9 +2,32 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const validator = require('validator');
 const User = require('../models/user');
 const userSchema = require('../schemas/user');
+
+const verifyToken = (req, res, next) => {
+  const token = req.headers['authorization'];
+
+  if (!token) {
+    return res.status(403).json({ error: 'Token não fornecido' });
+  }
+
+  // Remova o prefixo 'Bearer ' do token
+  const tokenWithoutBearer = token.replace('Bearer ', '');
+
+  jwt.verify(tokenWithoutBearer, 'token', (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ error: 'Token inválido' });
+    }
+    req.user = decoded;
+    next();
+  });
+};
+
+router.get('/auth/me', verifyToken, (req, res) => {
+  // O middleware verifyToken já validou o token, e os dados do usuário estão em req.user
+  res.json({ userId: req.user.userId });
+});
 
 router.post('/register', async (req, res) => {
   try {
@@ -38,5 +61,18 @@ router.post('/login', async (req, res) => {
     res.status(500).json({ error: 'Erro ao realizar login' });
   }
 });
+
+router.get('/users', async (req, res) => {
+  try {
+    const users = await User.find();
+    const totalUsers = await User.countDocuments();
+    res.json({
+      users: users,
+      total: totalUsers,
+    });
+  } catch(e) {
+    res.status(500).json({ error: 'Erro ao buscar usuários' });
+  }
+})
 
 module.exports = router;
