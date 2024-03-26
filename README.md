@@ -1,6 +1,6 @@
 # Idealização do projeto
 
-Projeto para o desafio de Desenvolvedor Front-End da Beta
+Teste que virou projeto FullStack
 
 ## 🔨 Recursos do projeto
 
@@ -29,7 +29,7 @@ As Tecnologias utilizadas foram:
 ### 1. Get the source code
 
 ```sh
-$ git clone -b develop git@github.com:joaovictorfd1/beta-project-teste.git
+$ git clone -b develop git@github.com:joaovictorfd1/projeto-fullstack.git
 $ cd beta-project-teste
 
 ```
