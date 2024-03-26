@@ -30,7 +30,7 @@ As Tecnologias utilizadas foram:
 
 ```sh
 $ git clone -b develop git@github.com:joaovictorfd1/projeto-fullstack.git
-$ cd beta-project-teste
+$ cd projeto-fullstack
 
 ```
 
